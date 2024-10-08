@@ -12,7 +12,7 @@ FetchContent_MakeAvailable(googletest)
 add_executable(testMathOperation testMathOperation.cpp testMathOperation2.cpp)
 
 # Crea un collegamento tra testTechie e la libreria Techie (usa il nome dell'eseguibile) e le librerie di google
-target_link_libraries(testMathOperation testMathLib GTest::gtest  glog::glog)
+target_link_libraries(testMathOperation RSAAlgorithmsLib GTest::gtest  glog::glog)
 
 # Registra i test, fa il modo che i test siano eseguiti con il comando CTest
 add_test(NAME testMathOperation COMMAND testMathOperation hOperation)
