@@ -2,6 +2,7 @@
 #include "MathOperation.hpp"
 #include <gtest/gtest.h>
 #include <glog/logging.h>
+#include <Prova.hpp>
  namespace testing {
 
 // Returns an AssertionResult object to indicate that an assertion has
@@ -67,6 +68,8 @@ float val1=.123456789,val2=.12345676;
     int x =0;
     int y=1;
     EXPECT_ANY_THROW(lanciaEccezione());
+    Prova p;
+    p.division();
     
 }
 

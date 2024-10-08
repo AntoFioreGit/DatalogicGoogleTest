@@ -20,10 +20,12 @@ find_package(glog REQUIRED)
 
 
 # Aggiunge la libreria TestMathLib
-add_library(testMathLib src/MathOperation.cpp)
+add_library(testMathLib src/MathOperation.cpp 
+						src/io/Prova.cpp)
 
-# Specifica la cartella degli "include" relativi agli header file
-target_include_directories(testMathLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+# Specifica la cartella degli "include" relativi agli header file delle classi da testare
+target_include_directories(testMathLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include  
+											${CMAKE_CURRENT_SOURCE_DIR}/include/io)
 
 # option(ENABLE_TESTS "Enable unit tests")
 # if (ENABLE_TESTS)
