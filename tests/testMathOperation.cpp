@@ -3,6 +3,9 @@
 #include <gtest/gtest.h>
 #include <glog/logging.h>
 #include <Prova.hpp>
+
+#include "io/file_json.h"
+#include "common/frame_processor.h"
  namespace testing {
 
 // Returns an AssertionResult object to indicate that an assertion has
@@ -79,5 +82,21 @@ int main(int argc, char **argv)
     ::testing::InitGoogleTest(&argc, argv);
     google::SetLogDestination(google::GLOG_INFO,"./" );
     google::InitGoogleLogging(argv[0]);
+
+    FrameProcessor bb;
+
+    //  nlohmann::json json_config;
+    // if (!rs::io::readJsonFile("gggg", json_config))
+    // {
+    //     LOG(ERROR) << "Failed to parse configuration file: " << "gggg";
+    //     return false;
+    // }
+
+
+
+
+
+
+
     return RUN_ALL_TESTS();
 }

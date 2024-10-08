@@ -9,7 +9,10 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 # Crea l'eseguibile, chiamato testTechie, del sorgente di test
-add_executable(testAppRsaAlgorithms testMathOperation.cpp testMathOperation2.cpp)
+add_executable(testAppRsaAlgorithms 
+                    testMathOperation.cpp 
+                    testMathOperation2.cpp
+                    FrameProcessorTest.cpp)
 
 # Crea un collegamento tra testTechie e la libreria Techie (usa il nome dell'eseguibile) e le librerie di google
 target_link_libraries(testAppRsaAlgorithms RSAAlgorithmsLib GTest::gtest  glog::glog)
