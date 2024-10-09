@@ -20,15 +20,32 @@ find_package(glog REQUIRED)
 find_package(OpenCV REQUIRED)
 
 # Genera  la libreria RSAAlgorithmsLib
-add_library(RSAAlgorithmsLib src/MathOperation.cpp 
-						src/io/Prova.cpp
-						src/io/file_json.cpp
-						src/common/frame_processor.cpp)
+#add_library(RSAAlgorithmsLib 
+#						src/MathOperation.cpp 						
+#						src/io/file_json.cpp
+#						src/io/calib_io.cpp						
+#						src/common/parameters.cpp						
+#						src/utils/filesytem_helpers.cpp
+#						src/common/frame_processor.cpp
+#	
+file(GLOB_RECURSE SRCS
+     "src/*.hpp"
+     "src/*.cpp"
+     "src/*.h"
+     "src/*.c"
+	 
+)				
+add_library(RSAAlgorithmsLib ${SRCS})
 target_link_libraries(RSAAlgorithmsLib ${OpenCV_LIBS})
+target_include_directories(RSAAlgorithmsLib PUBLIC ${INC_DIRSR})
 
 # Specifica la cartella degli "include" relativi agli header file delle classi da testare
 target_include_directories(RSAAlgorithmsLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src 
-											${CMAKE_CURRENT_SOURCE_DIR}/src/io)
+											${CMAKE_CURRENT_SOURCE_DIR}/src/io
+											${CMAKE_CURRENT_SOURCE_DIR}/src/calib
+											${CMAKE_CURRENT_SOURCE_DIR}/src/calib/ccb
+											${CMAKE_CURRENT_SOURCE_DIR}/src/common
+											${CMAKE_CURRENT_SOURCE_DIR}/src/utils)
 
 target_include_directories(RSAAlgorithmsLib PRIVATE ${OpenCV_INCLUDE_DIRS})
 ##########################################################################################################																					
@@ -39,7 +56,7 @@ target_include_directories(RSAAlgorithmsLib PRIVATE ${OpenCV_INCLUDE_DIRS})
 #     include(GoogleTest)
 # endif()
 # Abilita i test
-enable_testing()
+
 
 # Aggiungere la directory dei test
 add_subdirectory(tests)

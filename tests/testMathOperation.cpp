@@ -2,7 +2,6 @@
 #include "MathOperation.hpp"
 #include <gtest/gtest.h>
 #include <glog/logging.h>
-#include <Prova.hpp>
 
 #include "io/file_json.h"
 #include "common/frame_processor.h"
@@ -71,9 +70,7 @@ float val1=.123456789,val2=.12345676;
     int x =0;
     int y=1;
     EXPECT_ANY_THROW(lanciaEccezione());
-    Prova p;
-    p.division();
-    
+   
 }
 
 
