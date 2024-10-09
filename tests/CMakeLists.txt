@@ -17,11 +17,12 @@ add_executable(testAppRsaAlgorithms
                     testMathOperation.cpp                    
                     FrameProcessorTest.cpp
                     File_JsonTest.cpp
-                    Calib_Io_Test.cpp)
+                    Calib_Io_Test.cpp
+                    InitializeEnvironment.cpp)
                     
 
 # Crea un collegamento tra testTechie e la libreria Techie (usa il nome dell'eseguibile) e le librerie di google
-target_link_libraries(testAppRsaAlgorithms RSAAlgorithmsLib GTest::gtest  glog::glog) # ${LRS_TARGET}
+target_link_libraries(testAppRsaAlgorithms RSAAlgorithmsLib GTest::gtest GTest::gtest_main glog::glog) # ${LRS_TARGET}
 
 # Registra i test, fa il modo che i test siano eseguiti con il comando CTest
 #add_test(NAME testAppRsaAlgorithms COMMAND testAppRsaAlgorithms hOperation)
