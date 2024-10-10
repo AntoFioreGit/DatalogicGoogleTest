@@ -8,6 +8,7 @@
 #include "calib_io.h"
 #include "parameters.h"
 #include <array>
+#include "CommonTest.h"
 using namespace rs;
 class FrameProcessorTest : public ::testing::Test
 {
@@ -26,7 +27,7 @@ TEST_F(FrameProcessorTest, loadConfig)
      bool excpcted = false;
      EXPECT_EQ(result, excpcted);
 
-     config_file = "../../data/config/rs_algo_config.json";
+     config_file = fullNameConfig;
      result = _fp.loadConfig(config_file);
      excpcted = true;
      EXPECT_EQ(result, excpcted);
@@ -41,19 +42,20 @@ TEST_F(FrameProcessorTest, loadAlgoParameters)
      bool result = _fp.loadAlgoParameters(config_file, params);
      bool excpcted = false;
      EXPECT_EQ(result, excpcted);
-     config_file = "../../data/config//profile3d_calculator.json";
+     config_file = profile3DCalcConfig;
      result = _fp.loadAlgoParameters(config_file, params);
      excpcted = true;
      EXPECT_EQ(result, excpcted);
      excpcted = true;
      result = static_cast<bool>(params->getParameter("static_roi").query());
+     excpcted=static_roiConfig;
      EXPECT_EQ(result, excpcted);
      auto scanline_spacingValue = static_cast<int>(params->getParameter("scanline_spacing").query());
      excpcted = true;
-     EXPECT_EQ(scanline_spacingValue == 70, excpcted);
+     EXPECT_EQ(scanline_spacingValue == scanLine_spacingConfig, excpcted);
      auto num_scanlinesValue = static_cast<int>(params->getParameter("num_scanlines").query());
      excpcted = true;
-     EXPECT_EQ(num_scanlinesValue == 3, excpcted);
+     EXPECT_EQ(num_scanlinesValue == num_scalelineConfig, excpcted);
      result = typeid(InvalidParameter) == typeid(params->getParameter(""));
      excpcted = true;
      EXPECT_EQ(result, excpcted);
@@ -71,7 +73,7 @@ TEST_F(FrameProcessorTest, configure)
 {
 
      LOG(INFO) << "FrameProcessor test configure  begin";
-     std::string conv_calib_file = "../../data/config/calib_data.json";
+     std::string conv_calib_file = calibConfig;
      bool excpcted = true;
      ConveyorCalibrationParameters calib_params;
      bool result = rs::io::readConveyorCalibration(conv_calib_file, calib_params);
