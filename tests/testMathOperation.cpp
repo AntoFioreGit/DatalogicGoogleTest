@@ -72,42 +72,4 @@ float val1=.123456789,val2=.12345676;
     EXPECT_ANY_THROW(lanciaEccezione());
    
 }
-// class Environment : public ::testing::Environment {
-//  public:
-//   ~Environment() override {}
 
-//   // Override this to define how to set up the environment.
-//   void SetUp() override {
-
-//         google::SetLogDestination(google::GLOG_INFO,"./" );
-//     google::InitGoogleLogging("");
-//   }
-
-//   // Override this to define how to tear down the environment.
-//   void TearDown() override {}
-// };
-// ::testing::Environment* const timer_env = ::testing::AddGlobalTestEnvironment(new Environment);
-
-// int main(int argc, char **argv)
-// {
-//     ::testing::InitGoogleTest(&argc, argv);
-//     google::SetLogDestination(google::GLOG_INFO,"./" );
-//     google::InitGoogleLogging(argv[0]);
-
-//     FrameProcessor bb;
-
-//     //  nlohmann::json json_config;
-//     // if (!rs::io::readJsonFile("gggg", json_config))
-//     // {
-//     //     LOG(ERROR) << "Failed to parse configuration file: " << "gggg";
-//     //     return false;
-//     // }
-
-
-
-
-
-
-
-//     return RUN_ALL_TESTS();
-// }

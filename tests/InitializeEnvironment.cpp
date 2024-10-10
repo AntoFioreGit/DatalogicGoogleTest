@@ -8,7 +8,7 @@ class Environment : public ::testing::Environment {
   // Override this to define how to set up the environment.
   void SetUp() override {
 
-        google::SetLogDestination(google::GLOG_INFO,"./" );
+        google::SetLogDestination(google::GLOG_INFO,"./Test-Algorithms-log-ls" );
     google::InitGoogleLogging("");
   }
 

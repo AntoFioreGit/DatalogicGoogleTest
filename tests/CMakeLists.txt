@@ -13,8 +13,7 @@ FetchContent_MakeAvailable(googletest)
 include(GoogleTest)
 
 # Crea l'eseguibile, chiamato testTechie, del sorgente di test
-add_executable(testAppRsaAlgorithms 
-                    testMathOperation.cpp                    
+add_executable(testAppRsaAlgorithms                                       
                     FrameProcessorTest.cpp
                     File_JsonTest.cpp
                     Calib_Io_Test.cpp
