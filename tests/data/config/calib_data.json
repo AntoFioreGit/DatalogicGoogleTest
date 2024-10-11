@@ -1,0 +1,18 @@
+{
+    "roi_x": 0,
+    "roi_y": 0,
+    "roi_width": 0,
+    "roi_height": 0,
+    "range_x_min": -549.0,
+    "range_x_max": 553.0,
+    "range_y_min": -313.1,
+    "range_y_max": 315.4,
+    "range_z_min": -100.0,
+    "range_z_max": 3200.0,
+    "camera_position_x": 0.0,
+    "camera_position_y": 0.0,
+    "camera_position_z": 1335,
+    "camera_orientation_x": 11.0,
+    "camera_orientation_y": 0.0,
+    "camera_orientation_z": 0.0
+}

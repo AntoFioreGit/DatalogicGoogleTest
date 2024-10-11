@@ -22,6 +22,7 @@ TEST_F(File_JsonTest, readFile)
      EXPECT_EQ(result, excepted);
      excepted = true;
      pathFile = fullNameConfig;
+    
      result = rs::io::readJsonFile(pathFile, json_value);
      EXPECT_EQ(result, excepted);
      LOG(INFO) << "File_JsonTest test readFile  end";
