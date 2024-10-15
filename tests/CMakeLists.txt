@@ -17,6 +17,9 @@ add_executable(testAppRsaAlgorithms
                     unit/FrameProcessorTest.cpp
                     unit/File_JsonTest.cpp
                     unit/Calib_Io_Test.cpp
+                    unit/CameraParameterTest.cpp
+                    unit/PtrParameterTest.cpp
+                    unit/InvalidParameterTest.cpp
                     InitializeEnvironment.cpp)
                     
                     

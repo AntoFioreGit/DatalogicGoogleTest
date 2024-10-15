@@ -28,6 +28,19 @@ find_package(OpenCV REQUIRED)
 #						src/utils/filesytem_helpers.cpp
 #						src/common/frame_processor.cpp
 #	
+
+#set(TARGET_LINK_LIBRARIES pippo pluto paperino)
+message(STATUS "PERCORSO: ${CMAKE_CURRENT_SOURCE_DIR}")
+
+message(STATUS "CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
+
+message(STATUS "CMAKE_BINARY_DIR : ${CMAKE_BINARY_DIR}")
+
+message(STATUS "TARGET_LINK_LIBRARIES: ${TARGET_LINK_LIBRARIES}")
+message(STATUS "CMAKE_CURRENT_LIST_DIR: ${CMAKE_CURRENT_LIST_DIR}")
+message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+
+
 file(GLOB_RECURSE SRCS
      "src/*.hpp"
      "src/*.cpp"
@@ -37,7 +50,10 @@ file(GLOB_RECURSE SRCS
 )				
 add_library(RSAAlgorithmsLib ${SRCS})
 target_link_libraries(RSAAlgorithmsLib ${OpenCV_LIBS})
-target_include_directories(RSAAlgorithmsLib PUBLIC ${INC_DIRSR})
+#target_include_directories(RSAAlgorithmsLib PUBLIC ${INC_DIRSR})
+
+
+
 
 # Specifica la cartella degli "include" relativi agli header file delle classi da testare
 target_include_directories(RSAAlgorithmsLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src 
@@ -48,6 +64,7 @@ target_include_directories(RSAAlgorithmsLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/s
 											${CMAKE_CURRENT_SOURCE_DIR}/src/utils)
 
 target_include_directories(RSAAlgorithmsLib PRIVATE ${OpenCV_INCLUDE_DIRS})
+
 ##########################################################################################################																					
 
 # option(ENABLE_TESTS "Enable unit tests")
