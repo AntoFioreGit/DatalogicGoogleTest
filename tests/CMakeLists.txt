@@ -20,6 +20,7 @@ add_executable(testAppRsaAlgorithms
                     unit/CameraParameterTest.cpp
                     unit/PtrParameterTest.cpp
                     unit/InvalidParameterTest.cpp
+                    unit/ParametersContainerTest.cpp
                     InitializeEnvironment.cpp)
                     
                     
