@@ -294,7 +294,7 @@ TEST_F(ParametersContainerTest, setAll)
      LOG(INFO) << "ParametersContainerTest test setAll  begin";
      std::string id = "id";
      int basseValue = 5;
-   //  std::shared_ptr<int> valuePtr = nullptr;
+     std::unique_ptr<int> values[5];
      int min = 0;
      int max = 10;
      int step = 1;
@@ -303,27 +303,44 @@ TEST_F(ParametersContainerTest, setAll)
     // std::shared_ptr<rs::Parameter> param = nullptr;
      for (int idx = 1; idx <= 5; idx++)
      {
-
-          //(valuePtr = std::make_shared<int>(basseValue * idx);
-
-           std::shared_ptr<int> valuePtr= std::make_shared<int>(basseValue * idx);
-;
-         
-          std::string descIter = desc + std::to_string(idx);
-        std::shared_ptr<rs::Parameter> param  = std::make_shared<rs::PtrParameter<int>>(min * idx, max * idx, step, defaulVal * idx, valuePtr.get(), descIter);
+          values[idx-1]= std::make_unique<int>(basseValue * idx);        
+          std::string descIter = desc + std::to_string(idx); 
+         std::shared_ptr<rs::Parameter> param  = std::make_shared<rs::PtrParameter<int>>(min * idx, max * idx, step, defaulVal * idx,  values[idx-1].get(),  descIter);
           _pcPtr->addParameter(std::string(id + std::to_string(idx)), param);
-          valuePtr.reset();
-          param.reset();
+         
      }
      for (int idx = 1; idx <= 5; idx++)
      {
           std::string descIter = desc + std::to_string(idx);
-
-          auto valore = _pcPtr->getParameter(std::string(id + std::to_string(idx))).query();
+          auto idString = std::string(id + std::to_string(idx));
           EXPECT_FLOAT_EQ(_pcPtr->getParameter(std::string(id + std::to_string(idx))).query(), basseValue * idx);
-        //  EXPECT_EQ(_pcPtr->getParameter(std::string(id + std::to_string(idx))).getDescription(), descIter);
-        //  EXPECT_FLOAT_EQ(_pcPtr->getParameter(std::string(id + std::to_string(idx))).getDefault(), defaulVal * idx);
+          EXPECT_EQ(_pcPtr->getParameter(std::string(id + std::to_string(idx))).getDescription(), descIter);
+          EXPECT_FLOAT_EQ(_pcPtr->getParameter(std::string(id + std::to_string(idx))).getDefault(), defaulVal * idx);
      }
 
+     rs::ParametersContainer pCNewValue;
+     for (int idx = 1; idx <= 5; idx++)
+     {
+          *values[idx-1]=(basseValue * (idx * 2));        
+          std::string descIter = desc + std::to_string(idx); 
+         std::shared_ptr<rs::Parameter> param  = std::make_shared<rs::PtrParameter<int>>(min * (idx*2), max * (idx*2), step, defaulVal * (idx*2),  values[idx-1].get(),  descIter);
+          pCNewValue.addParameter(std::string(id + std::to_string(idx)), param);
+         
+     }
+
+     _pcPtr->setAll(pCNewValue);
+     for (int idx = 1; idx <= 5; idx++)
+     {
+          std::string descIter = desc + std::to_string(idx);
+          auto idString = std::string(id + std::to_string(idx));
+          EXPECT_FLOAT_EQ(_pcPtr->getParameter(std::string(id + std::to_string(idx))).query(), basseValue * idx*2);
+          EXPECT_EQ(_pcPtr->getParameter(std::string(id + std::to_string(idx))).getDescription(), descIter);
+          EXPECT_FLOAT_EQ(_pcPtr->getParameter(std::string(id + std::to_string(idx))).getDefault(), defaulVal * idx*2);
+
+          EXPECT_FLOAT_EQ(_pcPtr->getParameter(std::string(id + std::to_string(idx))).getRange().min,min*idx*2);
+          EXPECT_FLOAT_EQ(_pcPtr->getParameter(std::string(id + std::to_string(idx))).getRange().max,max*idx*2);
+     
+     }
+ 
      LOG(INFO) << "ParametersContainerTest test setAll  begin";
 }
