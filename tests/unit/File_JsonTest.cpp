@@ -3,13 +3,27 @@
 #include <glog/logging.h>
 #include "io/file_json.h"
 #include "CommonTest.h"
+#include "Util.h"
 class File_JsonTest : public ::testing::Test
 {
-protected:
-     void SetUp() override {}
-     void TearDown() override {}
-};
+public:
+     static std::string getPathFile() { return _fullNameConfig; }
 
+protected:
+     void SetUp() override
+     {
+          if (_fullNameConfig.size())
+               return;
+          fs::path homeDir = std::getenv("HOME");
+          _fullNameConfig = findFileRecursively(homeDir, nameAlgoConf);
+          return;
+     }
+     void TearDown() override {}
+
+private:
+     static std::string _fullNameConfig;
+};
+std::string File_JsonTest::_fullNameConfig = "";
 TEST_F(File_JsonTest, readFile)
 {
 
@@ -20,8 +34,9 @@ TEST_F(File_JsonTest, readFile)
      bool result = rs::io::readJsonFile(pathFile, json_value);
      EXPECT_EQ(result, excepted);
      excepted = true;
-     pathFile = fullNameConfig;
-    
+     // pathFile = fullNameConfig;
+     pathFile = File_JsonTest::getPathFile();
+
      result = rs::io::readJsonFile(pathFile, json_value);
      EXPECT_EQ(result, excepted);
      LOG(INFO) << "File_JsonTest test readFile  end";
@@ -32,8 +47,8 @@ TEST_F(File_JsonTest, checkParameters)
 
      LOG(INFO) << "File_JsonTest test checkParameters  begin";
      bool excepted = true;
-     const std::string pathFile = fullNameConfig;
-     ;
+     //const std::string pathFile = fullNameConfig;
+     const std::string pathFile = File_JsonTest::getPathFile();
      nlohmann::json json_value;
      bool result = rs::io::readJsonFile(pathFile, json_value);
      EXPECT_EQ(result, excepted);

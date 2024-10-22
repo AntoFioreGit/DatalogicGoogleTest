@@ -9,15 +9,41 @@
 #include "parameters.h"
 #include <array>
 #include "CommonTest.h"
+#include "Util.h"
 using namespace rs;
 class FrameProcessorTest : public ::testing::Test
 {
+public:
+     static std::string getconfigFile() { return _fullNameConfig; }
+     static std::string getfile3DCalcConfig() { return _fullnameprofile3DCalcConfig; }
+
 protected:
      FrameProcessor _fp;
 
-     void SetUp() override {}
+     void SetUp() override
+     {
+          if (!_fullNameConfig.size())
+          {
+               fs::path homeDir = std::getenv("HOME");
+               _fullNameConfig = findFileRecursively(homeDir, nameCalibConf);
+          }
+           if (!_fullnameprofile3DCalcConfig.size())
+          {
+               fs::path homeDir = std::getenv("HOME");
+               _fullnameprofile3DCalcConfig = findFileRecursively(homeDir, nameprofile3DCalcConf);
+          }
+
+          return;
+     }
      void TearDown() override {}
+
+private:
+     static std::string _fullNameConfig;
+     static std::string _fullnameprofile3DCalcConfig;
 };
+std::string FrameProcessorTest::_fullNameConfig = "";
+std::string FrameProcessorTest::_fullnameprofile3DCalcConfig = "";
+
 TEST_F(FrameProcessorTest, loadConfig)
 {
 
@@ -27,7 +53,8 @@ TEST_F(FrameProcessorTest, loadConfig)
      bool excpcted = false;
      EXPECT_EQ(result, excpcted);
 
-     config_file = fullNameConfig;
+    // config_file = fullNameConfig;
+    config_file = FrameProcessorTest::getconfigFile();
      result = _fp.loadConfig(config_file);
      excpcted = true;
      EXPECT_EQ(result, excpcted);
@@ -42,13 +69,14 @@ TEST_F(FrameProcessorTest, loadAlgoParameters)
      bool result = _fp.loadAlgoParameters(config_file, params);
      bool excpcted = false;
      EXPECT_EQ(result, excpcted);
-     config_file = profile3DCalcConfig;
+   //  config_file = profile3DCalcConfig;
+     config_file= FrameProcessorTest::getfile3DCalcConfig();
      result = _fp.loadAlgoParameters(config_file, params);
      excpcted = true;
      EXPECT_EQ(result, excpcted);
      excpcted = true;
      result = static_cast<bool>(params->getParameter("static_roi").query());
-     excpcted=static_roiConfig;
+     excpcted = static_roiConfig;
      EXPECT_EQ(result, excpcted);
      auto scanline_spacingValue = static_cast<int>(params->getParameter("scanline_spacing").query());
      excpcted = true;
@@ -73,7 +101,8 @@ TEST_F(FrameProcessorTest, configure)
 {
 
      LOG(INFO) << "FrameProcessor test configure  begin";
-     std::string conv_calib_file = calibConfig;
+    // std::string conv_calib_file = calibConfig;
+      std::string conv_calib_file= FrameProcessorTest::getconfigFile();
      bool excpcted = true;
      ConveyorCalibrationParameters calib_params;
      bool result = rs::io::readConveyorCalibration(conv_calib_file, calib_params);
@@ -95,14 +124,13 @@ TEST_F(FrameProcessorTest, invoke)
      auto vaule = _fp.invoke(nullptr, nullptr);
      EXPECT_EQ(vaule == 0, excpcted);
      LOG(INFO) << "FrameProcessor test invoke  end";
-     //TODO
+     // TODO
 
      // try {
 
      //       std::array<short int, 4> container{1, 2, 3, 4};
      //        std::array<unsigned short int, 10> container1{1, 2, 3, 4,5,6,7,8,9,10};
      //       vaule= _fp.invoke(container.data(), container1.data());
-
 
      // } catch (...) {
      //      int x;
@@ -119,6 +147,5 @@ TEST_F(FrameProcessorTest, getProfiles)
      auto vaule = _fp.getProfiles();
      EXPECT_EQ(vaule.size() == 0, excpcted);
      LOG(INFO) << "FrameProcessor test getProfiles  end";
-     //TODO other case
+     // TODO other case
 }
-

@@ -1,0 +1,5 @@
+{
+    "static_roi": true,
+    "num_scanlines": 3,
+    "scanline_spacing": 70
+}

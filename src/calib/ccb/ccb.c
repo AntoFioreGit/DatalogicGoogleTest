@@ -31,7 +31,7 @@ DEFINE_BLOCK_TYPE(TEMP_CORR_BLOCK_V0_V1INFO, TEMPCORRECTION)
 DEFINE_BLOCK_TYPE(RELATIVE_ILLUM_BLOCK, RELATIVE_ILLUM)
 DEFINE_BLOCK_TYPE(GAIN_CORRECTION_BLOCK, GAINCORRECTION)
 
-int block_id_matches(uint8_t ccb_block_id, block_t block_id) { return block_id->kind == ALL || ccb_block_id == block_id->block_id; }
+ int block_id_matches(uint8_t ccb_block_id, block_t block_id) { return block_id->kind == ALL || ccb_block_id == block_id->block_id; }
 
 const struct CAL_FILE_HEADER_V1 *ccb_read_header(const ccb_data_t *const ccb_data) {
     const unsigned char *p = ccb_data->p + 0;

@@ -1,0 +1,17 @@
+{
+    "version": "0.1.0",
+    "vlog_level": 0,
+    "num_cpu": 1,
+    "algo": [
+        {
+            "id": "profile3d_calculator",
+            "enable": true,
+            "config_file": "data/profile3d_calculator.json"
+        }
+    ],
+    "save" : {
+        "ab": true,
+        "xyz": true,
+        "out_dir": "data"
+    }
+}

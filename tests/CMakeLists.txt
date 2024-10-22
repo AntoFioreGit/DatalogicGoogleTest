@@ -21,7 +21,9 @@ add_executable(testAppRsaAlgorithms
                     unit/PtrParameterTest.cpp
                     unit/InvalidParameterTest.cpp
                     unit/ParametersContainerTest.cpp
-                    InitializeEnvironment.cpp)
+                    unit/CcbTest.cpp
+                    InitializeEnvironment.cpp
+                    Util.cpp)
                     
                     
 

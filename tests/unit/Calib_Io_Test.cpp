@@ -4,12 +4,38 @@
 #include "calib_io.h"
 #include "CommonTest.h"
 #include "parameters.h"
+#include "Util.h"
 class Calib_Io_Test : public ::testing::Test
 {
+public:
+     static std::string getconfigFile() { return _fullNameConfig; }
+      static std::string getconveyorCalibFile() { return _conveyorCalibConfig; }
+
 protected:
-     void SetUp() override {}
+     void SetUp() override
+     {
+          if (!_fullNameConfig.size())
+          {
+               fs::path homeDir = std::getenv("HOME");
+               _fullNameConfig = findFileRecursively(homeDir, nameCalibConf);
+          }
+           if (!_conveyorCalibConfig.size())
+          {
+               fs::path homeDir = std::getenv("HOME");
+               _conveyorCalibConfig = findFileRecursively(homeDir, nameConveyorCalibrConf);
+          }
+
+
+          return;
+     }
      void TearDown() override {}
+
+private:
+     static std::string _fullNameConfig;
+      static std::string _conveyorCalibConfig;
 };
+std::string Calib_Io_Test::_fullNameConfig = "";
+std::string Calib_Io_Test::_conveyorCalibConfig = "";
 
 TEST_F(Calib_Io_Test, readCalibration)
 {
@@ -23,7 +49,8 @@ TEST_F(Calib_Io_Test, readCalibration)
      bool result = rs::io::readConveyorCalibration(pathFile, params);
      EXPECT_EQ(result, expected);
 
-     pathFile = calibConfig;
+     //pathFile = calibConfig;
+     pathFile = Calib_Io_Test::getconfigFile();
      result = rs::io::readConveyorCalibration(pathFile, params);
      expected = true;
      EXPECT_EQ(result, expected);
@@ -92,7 +119,8 @@ TEST_F(Calib_Io_Test, readCameraIntrinsics)
      bool result = rs::io::readCameraIntrinsics(pathFile, 3, params);
      EXPECT_EQ(result, expected);
 
-     pathFile = ConveyorCalibrationConfig;
+    // pathFile = ConveyorCalibrationConfig;
+   pathFile=Calib_Io_Test::getconveyorCalibFile();
      expected = true;
      result = rs::io::readCameraIntrinsics(pathFile, 3, params);
      EXPECT_EQ(result, expected);

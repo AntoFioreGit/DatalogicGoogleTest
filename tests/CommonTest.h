@@ -14,10 +14,14 @@ static std::string algoConfigValue = "profile3d_calculator";
 
 // used in File_JsonTest and FrameProcessorTest
 static std::string fullNameConfig = "../../tests/data/config/rs_algo_config.json";
+static std::string nameAlgoConf = "rs_algo_configTest.json";
 
 // used  FrameProcessorTest
 static std::string profile3DCalcConfig = "../../tests/data/config/profile3d_calculator.json";
+static std::string nameprofile3DCalcConf = "profile3d_calculatorTest.json";
+
 static std::string calibConfig = "../../tests/data/config/calib_data.json";
+static std::string nameCalibConf = "calib_dataTest.json";
 
 static int scanLine_spacingConfig = 70;
 static int num_scalelineConfig = 3;
@@ -42,6 +46,7 @@ static float camera_orientation_yConfigValue = 0.0;
 static float camera_orientation_zConfigValue = 0.0;
 
 static std::string ConveyorCalibrationConfig = "../../tests/data/crXXX.ccb";
+static std::string nameConveyorCalibrConf = "crXXXTest.ccb";
 enum DistortionModel
 {
     DISTORTION_NONE,                 /**< No distortion compensation required. */
