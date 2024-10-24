@@ -14,14 +14,16 @@ public:
 protected:
      void SetUp() override
      {
+          std::string homeDir = std::getenv("HOME");;
           if (!_fullNameConfig.size())
           {
-               fs::path homeDir = std::getenv("HOME");
+               
+              // fs::path homeDir = std::getenv("HOME");
                _fullNameConfig = findFileRecursively(homeDir, nameCalibConf);
           }
            if (!_conveyorCalibConfig.size())
           {
-               fs::path homeDir = std::getenv("HOME");
+               //fs::path homeDir = std::getenv("HOME");
                _conveyorCalibConfig = findFileRecursively(homeDir, nameConveyorCalibrConf);
           }
 

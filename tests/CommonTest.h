@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-
+#include "aditof_intrinsics.h"
 // used in File_JsonTest
 static std::string versionConfigValue = "0.1.0";
 static int logLevelConfigValue = 0;
@@ -61,17 +61,43 @@ struct Intrinsics
     float distortion_coeffs[8]; /**< Distortion coefficients (radial and tangential) */
 };
 
-static Intrinsics IntrinsicsConigValue  {
-    {512,512},
-    {264.687744,255.533188},
-    {388.100891,388.21579},
+static Intrinsics IntrinsicsConigValue{
+    {512, 512},
+    {264.687744, 255.533188},
+    {388.100891, 388.21579},
     DISTORTION_OPENCV_BROWN_CONRADY,
     {-0.109356761,
-    0.0615734681,
-    -8.5030646e-05,
-    -2.79931082e-05,
-    0.0844119191,
-    0.235934585,
-    -0.0846114829,
-    0.169457629}
-};
+     0.0615734681,
+     -8.5030646e-05,
+     -2.79931082e-05,
+     0.0844119191,
+     0.235934585,
+     -0.0846114829,
+     0.169457629}};
+
+static rs::TofiCCBData ccb_data_ConfigValue{1024, /*n_rows*/
+                                            1024, /*n_cols*/
+                                            2,    /*n_freqs*/
+                                            1,    /*row_bin_factor*/
+                                            1,    /*col_bin_factor*/
+                                            0,    /*n_offset_rows*/
+                                            0,    /*n_offset_cols*/
+                                            1024, /*n_sensor_row*/
+                                            1024, /*n_sensor_cols*/
+                                            {
+                                                776.201782,      /*fx*/
+                                                776.43158,       /*fy*/
+                                                529.375488,      /*cx*/
+                                                511.066376,      /*cy*/
+                                                0,               /*codx*/
+                                                0,               /*cody*/
+                                                -0.109356761,    /*k1*/
+                                                0.0615734681,    /*k2*/
+                                                0.0844119191,    /*k3*/
+                                                0.235934585,     /*k4*/
+                                                -0.0846114829,   /*k5*/
+                                                0.169457629,     /*k2*/
+                                                -2.79931082e-05, /*p2*/
+                                                -8.5030646e-05,  /*p1*/
+                                            }};
+static std::string nameFileTestRaw="fileTest.raw";

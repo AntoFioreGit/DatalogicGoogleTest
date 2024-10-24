@@ -12,9 +12,10 @@ public:
 protected:
      void SetUp() override
      {
+           std::string homeDir = std::getenv("HOME");
           if (_fullNameConfig.size())
                return;
-          fs::path homeDir = std::getenv("HOME");
+          //fs::path homeDir = std::getenv("HOME");
           _fullNameConfig = findFileRecursively(homeDir, nameAlgoConf);
           return;
      }

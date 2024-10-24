@@ -94,33 +94,7 @@ TEST_F(CcbTest, ccb_read_header_block)
      CAL_HEADER_BLOCK_V3 header;
      setHeaderBlk3(header);
 
-     // header.BlockInfo.BlockID = 1;
-     // header.BlockInfo.BlockVersion = 2;
-     // header.BlockInfo.BlockCalibVer = 3;
-     // header.BlockInfo.BlockSize = 10;
-     // header.BlockInfo.CheckSum = 34;
-     // header.BlockInfo.CalibrationYear = 15;
-     // header.BlockInfo.CalibrationMonth = 45;
-     // header.BlockInfo.CalibrationDay = 12;
-     // header.BlockInfo.CalibrationHour = 6;
-     // header.BlockInfo.CalibrationMinute = 56;
-     // header.BlockInfo.CalibrationSecond = 22;
-     // header.BlockInfo.CalibrationPass = 67;
-     // header.nBlocks = 45;
-     // header.ChipID = 100;
-     // header.nRows = 321;
-     // header.nCols = 123;
-     // memset(header.ConfigVersionStr, 0, sizeof(header.ConfigVersionStr));
-     // memset(header.SerialNumber, 0, sizeof(header.SerialNumber));
-     // memset(header.ChipUniqueID, 0, sizeof(header.ChipUniqueID));
-
-     // strcpy(header.ConfigVersionStr, "Version 1.0");
-     // strcpy(header.SerialNumber, "Serial 123");
-     // strcpy(header.ChipUniqueID, "IMX 8.0");
-     // header.ControlAPIVersion = 6677;
-     // header.FirmwareVersion = 33;
-     // header.CalibrationVersion = 99;
-     // header.SequenceVersion = 1011;
+    
      char data[sizeof(CAL_FILE_HEADER_V1) + sizeof(CAL_HEADER_BLOCK_V3)];
      memcpy(data + sizeof(CAL_FILE_HEADER_V1), &header, sizeof(CAL_HEADER_BLOCK_V3));
 

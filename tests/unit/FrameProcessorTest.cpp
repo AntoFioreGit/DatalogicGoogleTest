@@ -22,14 +22,15 @@ protected:
 
      void SetUp() override
      {
+           std::string homeDir = std::getenv("HOME");;
           if (!_fullNameConfig.size())
           {
-               fs::path homeDir = std::getenv("HOME");
+              // fs::path homeDir = std::getenv("HOME");
                _fullNameConfig = findFileRecursively(homeDir, nameCalibConf);
           }
            if (!_fullnameprofile3DCalcConfig.size())
           {
-               fs::path homeDir = std::getenv("HOME");
+              // fs::path homeDir = std::getenv("HOME");
                _fullnameprofile3DCalcConfig = findFileRecursively(homeDir, nameprofile3DCalcConf);
           }
 
