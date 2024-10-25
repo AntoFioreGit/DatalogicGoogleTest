@@ -12,10 +12,10 @@ public:
 protected:
      void SetUp() override
      {
-           std::string homeDir = std::getenv("HOME");
+          std::string homeDir = std::getenv("HOME");
           if (_fullNameConfig.size())
                return;
-          //fs::path homeDir = std::getenv("HOME");
+          // fs::path homeDir = std::getenv("HOME");
           _fullNameConfig = findFileRecursively(homeDir, nameAlgoConf);
           return;
      }
@@ -48,7 +48,7 @@ TEST_F(File_JsonTest, checkParameters)
 
      LOG(INFO) << "File_JsonTest test checkParameters  begin";
      bool excepted = true;
-     //const std::string pathFile = fullNameConfig;
+     // const std::string pathFile = fullNameConfig;
      const std::string pathFile = File_JsonTest::getPathFile();
      nlohmann::json json_value;
      bool result = rs::io::readJsonFile(pathFile, json_value);
@@ -153,6 +153,11 @@ TEST_F(File_JsonTest, checkParameters)
                EXPECT_EQ(outDirValue == outDirConfig, excepted);
           }
      }
+     excepted = false;
+     result = json_value.contains("not_exist");
+     EXPECT_EQ(result, excepted);
+    EXPECT_EQ(json_value["not_exist"],nullptr);
+   
 
-     LOG(INFO) << "File_JsonTest test checkParameters  end";
+ 
 }

@@ -1,4 +1,6 @@
 #include "Util.h"
+#include <sstream> 
+#include <iomanip>
 /*
 std::std::string findFileRecursively(const fs::path& directory, const std::std::string& filename) {
     for (const auto& entry : fs::directory_iterator(directory)) {
@@ -50,4 +52,11 @@ std::string findFileRecursively(const std::string &directory, const std::string 
 
     closedir(dir);
     return "";
+}
+std::string getTimeStamp()
+{
+    std::stringstream timeStamp;
+    time_t const now_c = time(NULL);
+    timeStamp << std::put_time(localtime(&now_c), "%Y%m%d_%H%M%S");
+    return timeStamp.str();
 }

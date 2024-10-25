@@ -1,13 +1,18 @@
 #include <iostream>
 #include <gtest/gtest.h>
 #include <glog/logging.h>
+#include <iostream>
+#include <chrono>
+#include <ctime>
+#include <sstream>
 #include "CommonTest.h"
 #include "Util.h"
 #include "frame.h"
-
 #include <fstream>
 #include <vector>
 #include "types.h"
+#include "geometry.h"
+#include <opencv2/opencv.hpp>
 using namespace rs;
 
 class ImageFrameTest : public ::testing::Test
@@ -75,20 +80,15 @@ TEST_F(ImageFrameTest, frameAll)
      auto aspetc = mat.size().aspectRatio();
      auto height = mat.size().height;
      auto width = mat.size().width;
-
-     EXPECT_EQ(aspetc,1);
-     EXPECT_EQ(height,512);
-     EXPECT_EQ(width,512);
-
-      rs::Rect roi {512,512,512,512};
-       const std::vector<size_t> scan_lines {vectDataIn.begin(),vectDataIn.end()};
- 
-
-//TODO
-   /// auto ret =  _if.exportToPng("prova",roi,scan_lines);
-
-
-
-
+     EXPECT_EQ(aspetc, 1);
+     EXPECT_EQ(height, 512);
+     EXPECT_EQ(width, 512);
+     rs::Rect roi{0, 0, 512, 512};
+     const std::vector<size_t> scan_lines{3};
+     std::string nameExportPng = "Image_" + getTimeStamp() + ".png";
+     bool result = _if.exportToPng(nameExportPng, roi, scan_lines);
+     bool excepted = true;
+     EXPECT_EQ(result, excepted);
      LOG(INFO) << "ImageFrameTest test ReadCCB  end";
-}
+
+ }

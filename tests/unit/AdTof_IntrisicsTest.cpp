@@ -13,6 +13,7 @@ using namespace rs;
 class AdTof_IntrisicsTest : public ::testing::Test
 {
 public:
+//da sostituire con intrin.......
      static std::string getconveyorCalibFile() { return _conveyorCalibConfig; }
 
 protected:
