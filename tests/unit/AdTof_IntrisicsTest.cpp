@@ -13,18 +13,18 @@ using namespace rs;
 class AdTof_IntrisicsTest : public ::testing::Test
 {
 public:
-//da sostituire con intrin.......
-     static std::string getconveyorCalibFile() { return _conveyorCalibConfig; }
+
+     static std::string getIntrinsicsCalibFile() { return _intrinsicsCalibConfig; }
 
 protected:
      void SetUp() override
      {
           std::string homeDir = std::getenv("HOME");
 
-          if (!_conveyorCalibConfig.size())
+          if (!_intrinsicsCalibConfig.size())
           {
                //  fs::path homeDir = std::getenv("HOME");
-               _conveyorCalibConfig = findFileRecursively(homeDir, nameConveyorCalibrConf);
+               _intrinsicsCalibConfig = findFileRecursively(homeDir, nameIntrinsicsCalibrConf);
           }
 
           return;
@@ -32,11 +32,11 @@ protected:
      void TearDown() override {}
 
 private:
-     static std::string _conveyorCalibConfig;
+     static std::string _intrinsicsCalibConfig;
     
 };
 
-std::string AdTof_IntrisicsTest::_conveyorCalibConfig = "";
+std::string AdTof_IntrisicsTest::_intrinsicsCalibConfig = "";
 
 
 TEST_F(AdTof_IntrisicsTest, ReadCCB)
@@ -44,7 +44,7 @@ TEST_F(AdTof_IntrisicsTest, ReadCCB)
 
      LOG(INFO) << "AdTof_IntrisicsTest test ReadCCB  begin";
      bool expected = true;
-     std::string pathFile = AdTof_IntrisicsTest::getconveyorCalibFile();
+     std::string pathFile = AdTof_IntrisicsTest::getIntrinsicsCalibFile();
      rs::TofiCCBData ccb_data;
      uint16_t mode = 0;
 

@@ -9,7 +9,7 @@ class Calib_Io_Test : public ::testing::Test
 {
 public:
      static std::string getconfigFile() { return _fullNameConfig; }
-      static std::string getconveyorCalibFile() { return _conveyorCalibConfig; }
+      static std::string getIntrinsicsCalibFile() { return _intrinsicsCalibConfig; }
 
 protected:
      void SetUp() override
@@ -21,10 +21,10 @@ protected:
               // fs::path homeDir = std::getenv("HOME");
                _fullNameConfig = findFileRecursively(homeDir, nameCalibConf);
           }
-           if (!_conveyorCalibConfig.size())
+           if (!_intrinsicsCalibConfig.size())
           {
                //fs::path homeDir = std::getenv("HOME");
-               _conveyorCalibConfig = findFileRecursively(homeDir, nameConveyorCalibrConf);
+               _intrinsicsCalibConfig = findFileRecursively(homeDir, nameIntrinsicsCalibrConf);
           }
 
 
@@ -34,10 +34,10 @@ protected:
 
 private:
      static std::string _fullNameConfig;
-      static std::string _conveyorCalibConfig;
+      static std::string _intrinsicsCalibConfig;
 };
 std::string Calib_Io_Test::_fullNameConfig = "";
-std::string Calib_Io_Test::_conveyorCalibConfig = "";
+std::string Calib_Io_Test::_intrinsicsCalibConfig = "";
 
 TEST_F(Calib_Io_Test, readCalibration)
 {
@@ -122,7 +122,7 @@ TEST_F(Calib_Io_Test, readCameraIntrinsics)
      EXPECT_EQ(result, expected);
 
     // pathFile = ConveyorCalibrationConfig;
-   pathFile=Calib_Io_Test::getconveyorCalibFile();
+   pathFile=Calib_Io_Test::getIntrinsicsCalibFile();
      expected = true;
      result = rs::io::readCameraIntrinsics(pathFile, 3, params);
      EXPECT_EQ(result, expected);

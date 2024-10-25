@@ -12,13 +12,15 @@
 #include <vector>
 #include "types.h"
 #include "geometry.h"
+#include "frame_processor.h"
 
 using namespace rs;
 
-class ImageFrameTest : public ::testing::Test
+class XYZFrameTest : public ::testing::Test
 {
 public:
      static std::string getFileTestRaw() { return _fileTestRaw; }
+     static std::string getconfigFile() { return _fullNameConfig; }
 
 protected:
      void SetUp() override
@@ -26,27 +28,44 @@ protected:
           std::string homeDir = std::getenv("HOME");
 
           if (!_fileTestRaw.size())
-          {
-               //  fs::path homeDir = std::getenv("HOME");
+          {              
                _fileTestRaw = findFileRecursively(homeDir, nameFileTestRaw);
           }
-
+          if (!_fullNameConfig.size())
+          {              
+               _fullNameConfig = findFileRecursively(homeDir, nameCalibConf);
+          }
           return;
      }
      void TearDown() override {}
 
 protected:
      static std::string _fileTestRaw;
+     static std::string _fullNameConfig;
      rs::ImageFrame _if;
 };
 
-std::string ImageFrameTest::_fileTestRaw = "";
+std::string XYZFrameTest::_fileTestRaw = "";
+std::string XYZFrameTest::_fullNameConfig = "";
 
-TEST_F(ImageFrameTest, frameAll)
+TEST_F(XYZFrameTest, getProfileEmpty)
 {
 
-     LOG(INFO) << "ImageFrameTest test ReadCCB  start";
-     std::string pathFile = ImageFrameTest::getFileTestRaw();
+     LOG(INFO) << "XYZFrameTest test getProfileEmpty  start";
+     std::string pathFile = XYZFrameTest::getFileTestRaw();
+
+      FrameProcessor fp;
+       bool result = fp.initialize(_fullNameConfig);
+     bool excpcted = false;
+     EXPECT_EQ(result, excpcted);
+     if ( result ) {
+
+          
+     }
+
+
+
+     //TODO
 
      unsigned int size = 512 * 512 * 2;
 
@@ -86,9 +105,9 @@ TEST_F(ImageFrameTest, frameAll)
      rs::Rect roi{0, 0, 512, 512};
      const std::vector<size_t> scan_lines{3};
      std::string nameExportPng = "Image_" + getTimeStamp() + ".png";
-     bool result = _if.exportToPng(nameExportPng, roi, scan_lines);
+    result = _if.exportToPng(nameExportPng, roi, scan_lines);
      bool excepted = true;
      EXPECT_EQ(result, excepted);
-     LOG(INFO) << "ImageFrameTest test ReadCCB  end";
+     LOG(INFO) << "XYZFrameTest test getProfileEmpty  end";
 
  }

@@ -46,7 +46,7 @@ static float camera_orientation_yConfigValue = 0.0;
 static float camera_orientation_zConfigValue = 0.0;
 
 static std::string ConveyorCalibrationConfig = "../../tests/data/crXXX.ccb";
-static std::string nameConveyorCalibrConf = "crXXXTest.ccb";
+static std::string nameIntrinsicsCalibrConf = "crXXXTest.ccb";
 enum DistortionModel
 {
     DISTORTION_NONE,                 /**< No distortion compensation required. */

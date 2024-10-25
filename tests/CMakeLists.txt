@@ -24,6 +24,7 @@ add_executable(testAppRsaAlgorithms
                     unit/CcbTest.cpp
                     unit/AdTof_IntrisicsTest.cpp
                     unit/ImageFrameTest.cpp
+                    unit/XYZFrameTest.cpp
                     InitializeEnvironment.cpp
                     Util.cpp)
                     
