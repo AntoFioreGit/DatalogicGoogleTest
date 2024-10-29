@@ -13,101 +13,128 @@
 #include "types.h"
 #include "geometry.h"
 #include "frame_processor.h"
+#include "calib_io.h"
+#include "filesytem_helpers.h"
+#include "json.h"
+
 
 using namespace rs;
 
 class XYZFrameTest : public ::testing::Test
 {
 public:
-     static std::string getFileTestRaw() { return _fileTestRaw; }
-     static std::string getconfigFile() { return _fullNameConfig; }
+     static std::string getFileIntCalibXYZFrame() { return _intrCalXYZFrameConf; }
+     static std::string getFileCalibXYZFrame() { return _calibXYZFrameConf; }
+     static std::string getAlgoFile() { return _algoConf; }
 
 protected:
      void SetUp() override
      {
           std::string homeDir = std::getenv("HOME");
 
-          if (!_fileTestRaw.size())
-          {              
-               _fileTestRaw = findFileRecursively(homeDir, nameFileTestRaw);
+          if (!_intrCalXYZFrameConf.size())
+          {
+               _intrCalXYZFrameConf = findFileRecursively(homeDir, nameIntrCalXYZFrameConf);
           }
-          if (!_fullNameConfig.size())
-          {              
-               _fullNameConfig = findFileRecursively(homeDir, nameCalibConf);
+          if (!_calibXYZFrameConf.size())
+          {
+               _calibXYZFrameConf = findFileRecursively(homeDir, nameCalibXYZFrameConf);
+          }
+          if (!_algoConf.size())
+          {
+               _algoConf = findFileRecursively(homeDir, nameAlgoConf);
           }
           return;
      }
      void TearDown() override {}
 
 protected:
-     static std::string _fileTestRaw;
-     static std::string _fullNameConfig;
-     rs::ImageFrame _if;
+     static std::string _intrCalXYZFrameConf;
+     static std::string _calibXYZFrameConf;
+     static std::string _algoConf;
+    
 };
 
-std::string XYZFrameTest::_fileTestRaw = "";
-std::string XYZFrameTest::_fullNameConfig = "";
+std::string XYZFrameTest::_intrCalXYZFrameConf = "";
+std::string XYZFrameTest::_calibXYZFrameConf = "";
+std::string XYZFrameTest::_algoConf = "";
 
 TEST_F(XYZFrameTest, getProfileEmpty)
 {
 
      LOG(INFO) << "XYZFrameTest test getProfileEmpty  start";
-     std::string pathFile = XYZFrameTest::getFileTestRaw();
+     std::string pathAlgoFile = XYZFrameTest::getAlgoFile();
+     std::string pathCalibXYZFile = XYZFrameTest::getFileCalibXYZFrame();
+     std::string pathIntCalXYZFile = XYZFrameTest::getFileIntCalibXYZFrame();
+     bool expected = true;
+     bool result = true;
 
-      FrameProcessor fp;
-       bool result = fp.initialize(_fullNameConfig);
-     bool excpcted = false;
-     EXPECT_EQ(result, excpcted);
-     if ( result ) {
-
-          
-     }
-
-
-
-     //TODO
-
-     unsigned int size = 512 * 512 * 2;
-
-     std::vector<char> vectData(size);
-     std::ifstream file(pathFile, std::ios::binary);
-     if (!file.is_open())
+     rs::Intrinsics cam_intrinsics;
+     result = rs::io::readCameraIntrinsics(pathIntCalXYZFile, 3, cam_intrinsics); // 3 = ADTF "lr-qnative"
+     EXPECT_EQ(result, expected);
+     if (!result)
      {
-          LOG(INFO) << "Error Open file " << pathFile;
+          LOG(ERROR) << "Error on load camera intrinsics from file " << pathIntCalXYZFile;
           return;
      }
-     file.read(vectData.data(), size);
-     LOG(INFO) << "File  = " << pathFile << " Size = " << vectData.size();
-     file.close();
-
-     _if.prepare(512, 512);
-     std::vector<uint16_t> vectDataIn((uint16_t *)vectData.data(), (uint16_t *)vectData.data() + vectData.size() / 2);
-     _if.copyPixels((uint16_t *)vectDataIn.data(), vectDataIn.size());
-     std::vector<uint16_t> vectDataOut(_if.getPixels(), _if.getPixels() + 512 * 512);
-     EXPECT_EQ(vectDataIn.size(), vectDataOut.size());
-     if (vectDataIn.size() == vectDataOut.size())
+     rs::ConveyorCalibrationParameters calib_params;
+     result = rs::io::readConveyorCalibration(pathCalibXYZFile, calib_params);
+     EXPECT_EQ(result, expected);
+     if (!result)
      {
-          for (int idx = 0; idx < vectDataOut.size(); idx++)
-          {
-               EXPECT_EQ(vectDataIn.at(idx), vectDataOut.at(idx));
-               if (vectDataIn.at(idx) != vectDataOut.at(idx))
-                    break;
-          }
+          LOG(ERROR) << "Error on load  target calibration from file  " << pathCalibXYZFile;
+          return;
      }
-     cv::Mat mat;
-     _if.convertToMat(mat);
-     auto aspetc = mat.size().aspectRatio();
-     auto height = mat.size().height;
-     auto width = mat.size().width;
-     EXPECT_EQ(aspetc, 1);
-     EXPECT_EQ(height, 512);
-     EXPECT_EQ(width, 512);
-     rs::Rect roi{0, 0, 512, 512};
-     const std::vector<size_t> scan_lines{3};
-     std::string nameExportPng = "Image_" + getTimeStamp() + ".png";
-    result = _if.exportToPng(nameExportPng, roi, scan_lines);
-     bool excepted = true;
-     EXPECT_EQ(result, excepted);
-     LOG(INFO) << "XYZFrameTest test getProfileEmpty  end";
 
- }
+     FrameProcessor fp;
+     result = fp.initialize(pathAlgoFile);
+     expected = true;
+     EXPECT_EQ(result, expected);
+     if (!result)
+     {
+          LOG(ERROR) << "Error on load configuration  file  " << pathAlgoFile;
+          return;
+     }
+  //   fp.configure(calib_params, cam_intrinsics);
+     std::string homeDir = std::getenv("HOME");
+     std::vector<char> frame_buffer;
+     int frame_width = cam_intrinsics.image_size[0];
+     int frame_height = cam_intrinsics.image_size[1];
+
+     // Active Brightness
+     ImageFrame ab_frame;
+     std::vector<char> ab_buffer;
+     std::string ab_dataFile = findFileRecursively(homeDir, ab_DataMap[ONE_PROF]);
+
+     result = rs::utils::filesystem::ReadFileToBuffer(ab_dataFile, frame_buffer);
+     expected = true;
+     EXPECT_EQ(result, expected);
+     if (!result)
+     {
+
+          LOG(ERROR) << "Error on load AB  file  " << ab_dataFile;
+          return;
+     }
+     ab_frame.prepare(frame_height, frame_width);
+     ab_frame.copyPixels(reinterpret_cast<uint16_t *>(frame_buffer.data()), frame_height * frame_width);
+
+     frame_buffer.clear();
+     XyzFrame xyz_frame;
+
+     std::string xyz_dataFile = findFileRecursively(homeDir, xyz_DataMap[ONE_PROF]);
+
+     result = rs::utils::filesystem::ReadFileToBuffer(xyz_dataFile, frame_buffer);
+     expected = true;
+     EXPECT_EQ(result, expected);
+     if (!result)
+     {
+          LOG(ERROR) << "Error on load XYZ data file  " << xyz_dataFile;
+          return;
+     }
+     xyz_frame.prepare(frame_height, frame_width);
+     xyz_frame.copyPoints(reinterpret_cast<int16_t *>(frame_buffer.data()), frame_height * frame_width);
+
+     size_t num_profiles = fp.invoke(xyz_frame.getPoints(), ab_frame.getPixels());
+
+     LOG(INFO) << "XYZFrameTest test getProfileEmpty  end";
+}

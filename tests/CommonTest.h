@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include "aditof_intrinsics.h"
+#include <map>
 // used in File_JsonTest
 static std::string versionConfigValue = "0.1.0";
 static int logLevelConfigValue = 0;
@@ -100,4 +101,29 @@ static rs::TofiCCBData ccb_data_ConfigValue{1024, /*n_rows*/
                                                 -2.79931082e-05, /*p2*/
                                                 -8.5030646e-05,  /*p1*/
                                             }};
-static std::string nameFileTestRaw="fileTest.raw";
+static std::string nameFileTestRaw = "fileTest.raw";
+
+enum Profile4File
+{
+    ZERO_PROF,
+    ONE_PROF,
+    TWO_PROF,
+    THREE_PROF
+};
+static std::string nameIntrCalXYZFrameConf = "crXYZ_FrameTest.ccb";
+static std::string nameCalibXYZFrameConf = "calib_data_XYZFrameTest.json";
+
+static std::map<Profile4File, std::string> xyz_DataMap{
+    {ZERO_PROF, "data_output_qmp_74_XYZ_Test.bin"},
+    {ONE_PROF, "data_output_qmp_90_XYZ_Test.bin"},
+    {TWO_PROF, "data_output_qmp_88_XYZ_Test.bin"},
+    {THREE_PROF, "data_output_qmp_84_XYZ_Test.bin"}
+
+};
+static std::map<Profile4File, std::string> ab_DataMap{
+    {ZERO_PROF, "data_output_qmp_74_AB_Test.bin"},
+    {ONE_PROF, "data_output_qmp_90_AB_Test.bin"},
+    {TWO_PROF, "data_output_qmp_88_AB_Test.bin"},
+    {THREE_PROF, "data_output_qmp_84_AB_Test.bin"}
+
+};
