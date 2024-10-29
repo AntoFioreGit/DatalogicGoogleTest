@@ -1,6 +1,23 @@
 #include "Util.h"
 #include <sstream> 
 #include <iomanip>
+
+
+
+
+#include <string>
+#include <algorithm>
+
+std::string getDirectoryPath(const std::string& filePath) {
+ 
+    //  Unix-like e '\\'  Windows
+    size_t lastSeparator = filePath.find_last_of("/\\");
+    if (lastSeparator == std::string::npos) {
+        return filePath;
+    }
+    
+    return filePath.substr(0, lastSeparator + 1);
+}
 /*
 std::std::string findFileRecursively(const fs::path& directory, const std::std::string& filename) {
     for (const auto& entry : fs::directory_iterator(directory)) {

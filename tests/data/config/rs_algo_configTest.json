@@ -6,7 +6,7 @@
         {
             "id": "profile3d_calculator",
             "enable": true,
-            "config_file": "data/profile3d_calculator.json"
+            "config_file": "profile3d_calculatorTest.json"
         }
     ],
     "save" : {

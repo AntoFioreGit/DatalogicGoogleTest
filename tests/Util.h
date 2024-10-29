@@ -11,3 +11,4 @@ std::string findFileRecursively(const std::string &directory, const std::string 
 //namespace fs = std::filesystem;
 //std::string findFileRecursively(const fs::path& directory, const std::string& filename) ;
 std::string getTimeStamp();
+std::string getDirectoryPath(const std::string& filePath);

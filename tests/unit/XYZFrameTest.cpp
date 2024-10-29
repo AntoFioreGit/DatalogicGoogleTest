@@ -16,7 +16,7 @@
 #include "calib_io.h"
 #include "filesytem_helpers.h"
 #include "json.h"
-
+#include "file_json.h"
 
 using namespace rs;
 
@@ -59,6 +59,25 @@ std::string XYZFrameTest::_intrCalXYZFrameConf = "";
 std::string XYZFrameTest::_calibXYZFrameConf = "";
 std::string XYZFrameTest::_algoConf = "";
 
+std::string generateTempConf(std::string& confFile) {
+     std::string newFileGenerate;
+
+      nlohmann::json json_value;
+     bool result = rs::io::readJsonFile(confFile, json_value);
+     if (! result ) {
+           LOG(ERROR) << "Error on read file : " << confFile;
+           return newFileGenerate;
+     }
+
+     std::string absolutePath = getDirectoryPath(confFile);
+     std::string nameTmpConf = std::string("Tmp_")+nameAlgoConf;
+     newFileGenerate = absolutePath +"/"+ nameTmpConf;
+     json_value["algo"][0]["config_file"]=absolutePath+"/"+nameprofile3DCalcConf;
+     std::ofstream o(newFileGenerate);
+      o << std::setw(4) << json_value << std::endl;
+     o.close();
+     return newFileGenerate;
+}
 TEST_F(XYZFrameTest, getProfileEmpty)
 {
 
@@ -68,6 +87,10 @@ TEST_F(XYZFrameTest, getProfileEmpty)
      std::string pathIntCalXYZFile = XYZFrameTest::getFileIntCalibXYZFrame();
      bool expected = true;
      bool result = true;
+
+     std::string tmpConfFile = generateTempConf(pathAlgoFile);
+     if (! tmpConfFile.size())
+          return ;
 
      rs::Intrinsics cam_intrinsics;
      result = rs::io::readCameraIntrinsics(pathIntCalXYZFile, 3, cam_intrinsics); // 3 = ADTF "lr-qnative"
@@ -87,7 +110,7 @@ TEST_F(XYZFrameTest, getProfileEmpty)
      }
 
      FrameProcessor fp;
-     result = fp.initialize(pathAlgoFile);
+     result = fp.initialize(tmpConfFile);
      expected = true;
      EXPECT_EQ(result, expected);
      if (!result)
@@ -95,7 +118,7 @@ TEST_F(XYZFrameTest, getProfileEmpty)
           LOG(ERROR) << "Error on load configuration  file  " << pathAlgoFile;
           return;
      }
-  //   fp.configure(calib_params, cam_intrinsics);
+     fp.configure(calib_params, cam_intrinsics);
      std::string homeDir = std::getenv("HOME");
      std::vector<char> frame_buffer;
      int frame_width = cam_intrinsics.image_size[0];
@@ -135,6 +158,7 @@ TEST_F(XYZFrameTest, getProfileEmpty)
      xyz_frame.copyPoints(reinterpret_cast<int16_t *>(frame_buffer.data()), frame_height * frame_width);
 
      size_t num_profiles = fp.invoke(xyz_frame.getPoints(), ab_frame.getPixels());
+     std::remove(tmpConfFile.c_str());
 
      LOG(INFO) << "XYZFrameTest test getProfileEmpty  end";
 }

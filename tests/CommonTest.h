@@ -10,7 +10,7 @@ static bool enableConfigValue = true;
 static bool abConfig = true;
 static bool xyzConfig = true;
 static std::string outDirConfig = "data";
-static std::string fileConfig = "data/profile3d_calculator.json";
+static std::string fileConfig = "profile3d_calculatorTest.json";
 static std::string algoConfigValue = "profile3d_calculator";
 
 // used in File_JsonTest and FrameProcessorTest
@@ -46,7 +46,7 @@ static float camera_orientation_xConfigValue = 11.0;
 static float camera_orientation_yConfigValue = 0.0;
 static float camera_orientation_zConfigValue = 0.0;
 
-static std::string ConveyorCalibrationConfig = "../../tests/data/crXXX.ccb";
+//static std::string ConveyorCalibrationConfig = "../../tests/data/crXXX.ccb";
 static std::string nameIntrinsicsCalibrConf = "crXXXTest.ccb";
 enum DistortionModel
 {
