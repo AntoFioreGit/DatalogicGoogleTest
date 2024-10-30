@@ -7,7 +7,12 @@
 
 #include <string>
 #include <algorithm>
-
+#include "json.h"
+#include "file_json.h"
+#include "CommonTest.h"
+#include <iostream>
+#include <fstream>
+#include <glog/logging.h>
 std::string getDirectoryPath(const std::string& filePath) {
  
     //  Unix-like e '\\'  Windows
@@ -76,4 +81,25 @@ std::string getTimeStamp()
     time_t const now_c = time(NULL);
     timeStamp << std::put_time(localtime(&now_c), "%Y%m%d_%H%M%S");
     return timeStamp.str();
+}
+std::string generateTempConf1(std::string &confFile)
+{
+     std::string newFileGenerate;
+
+     nlohmann::json json_value;
+     bool result = rs::io::readJsonFile(confFile, json_value);
+     if (!result)
+     {
+         // LOG(ERROR) << "Error on read file : " << confFile;
+          return newFileGenerate;
+     }
+
+     std::string absolutePath = getDirectoryPath(confFile);
+     std::string nameTmpConf = std::string("Tmp_") + nameAlgoConf;
+     newFileGenerate = absolutePath + "/" + nameTmpConf;
+     json_value["algo"][0]["config_file"] = absolutePath + "/" + nameprofile3DCalcConf;
+     std::ofstream o(newFileGenerate);
+     o << std::setw(4) << json_value << std::endl;
+     o.close();
+     return newFileGenerate;
 }

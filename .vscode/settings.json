@@ -69,5 +69,8 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "variant": "cpp"
-    }
+    },
+    "cmake.configureArgs": ["DMAKE_ENABLE_DEBUGGER:BOOL=ON"]
+   
 }
+

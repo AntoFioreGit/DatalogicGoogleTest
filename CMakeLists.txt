@@ -60,6 +60,7 @@ target_include_directories(RSAAlgorithmsLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/s
 											${CMAKE_CURRENT_SOURCE_DIR}/src/io
 											${CMAKE_CURRENT_SOURCE_DIR}/src/calib
 											${CMAKE_CURRENT_SOURCE_DIR}/src/calib/ccb
+											${CMAKE_CURRENT_SOURCE_DIR}/src/algorithms
 											${CMAKE_CURRENT_SOURCE_DIR}/src/common
 											${CMAKE_CURRENT_SOURCE_DIR}/src/utils)
 
