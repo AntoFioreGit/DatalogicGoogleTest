@@ -20,7 +20,8 @@
 
 #include "profile3d_calculator.h"
 using namespace rs;
-
+#include <opencv2/imgproc.hpp>
+#include <opencv2/highgui.hpp>
 class XYZFrameTest : public ::testing::Test
 {
 public:
@@ -59,27 +60,7 @@ std::string XYZFrameTest::_intrCalXYZFrameConf = "";
 std::string XYZFrameTest::_calibXYZFrameConf = "";
 std::string XYZFrameTest::_algoConf = "";
 
-// std::string generateTempConf(std::string &confFile)
-// {
-//      std::string newFileGenerate;
 
-//      nlohmann::json json_value;
-//      bool result = rs::io::readJsonFile(confFile, json_value);
-//      if (!result)
-//      {
-//           LOG(ERROR) << "Error on read file : " << confFile;
-//           return newFileGenerate;
-//      }
-
-//      std::string absolutePath = getDirectoryPath(confFile);
-//      std::string nameTmpConf = std::string("Tmp_") + nameAlgoConf;
-//      newFileGenerate = absolutePath + "/" + nameTmpConf;
-//      json_value["algo"][0]["config_file"] = absolutePath + "/" + nameprofile3DCalcConf;
-//      std::ofstream o(newFileGenerate);
-//      o << std::setw(4) << json_value << std::endl;
-//      o.close();
-//      return newFileGenerate;
-// }
 TEST_F(XYZFrameTest, checkProfiles)
 {
 
@@ -90,7 +71,7 @@ TEST_F(XYZFrameTest, checkProfiles)
      bool expected = true;
      bool result = true;
 
-     std::string tmpConfFile = generateTempConf1(pathAlgoFile);
+     std::string tmpConfFile = generateTempConf(pathAlgoFile,ALGO);
      if (!tmpConfFile.size())
           return;
 
@@ -182,6 +163,71 @@ TEST_F(XYZFrameTest, checkProfiles)
           int expectedXYZPoints = idx * NUMBER_POINT_4_PROFILE;
           EXPECT_EQ(countPointValidResult, expectedXYZPoints);
           LOG(INFO) << "Test Profiles End. Numerber profiles expected:  " << idx;
+          
+               if (0) {
+
+                if (idx != THREE_PROF )continue;
+
+ float gamma = 0.5;
+        std::vector<uint8_t> lut(256);
+        for (int k = 0; k < 256; k++)
+        {
+            lut[k] = cv::saturate_cast<uint8_t>(pow((k / 255.0f), gamma) * 255.0f);
+        }
+         ab_frame.prepare(1024,512);
+                cv::Mat ab;
+              ab_frame.convertToMat(ab);
+              rs::Rect roi{0, 0, 1024,512};
+                const std::vector<size_t> scan_lines{3};
+                 std::string nameExportPng = "PippoImage_" + getTimeStamp() + ".png";
+                 bool  result = ab_frame.exportToPng(nameExportPng, roi, scan_lines);
+
+
+                 auto aspetc = ab.size().aspectRatio();
+     auto height = ab.size().height;
+     auto width = ab.size().width;
+
+     //     cv::Mat norm_ab(ab.size(), CV_8U);
+     //     cv::normalize(ab, norm_ab, 0, 255, cv::NORM_MINMAX, CV_8U);
+     //     cv::LUT(norm_ab, lut, norm_ab);
+     //     cv::namedWindow("AB", cv::WINDOW_AUTOSIZE);
+     //     cv::imshow("AB", norm_ab);
+     //     cv::waitKey(0);
+     //     rs::ImageFrame _if;
+         
+
+        // _if.prepare(512,  512);
+        //  _if.copyPixels((uint16_t *) ab_frame.getPixels(),frame_height * frame_width);
+        
+             // if (idx == THREE_PROF ){
+              //       rs::ImageFrame _if;
+               /*
+               cv::Mat mat;
+               _if.prepare(512,  512);
+               _if.copyPixels((uint16_t *) xyz_frame.getPoints(),frame_height * frame_width);
+                _if.convertToMat(mat);
+                
+                 
+                ;
+
+
+
+               const std::vector<size_t> scan_lines{3};
+                rs::Rect roi{0, 0, mat.size().width, mat.size().height};
+                 std::string nameExportPng = "PippoImage_" + getTimeStamp() + ".png";
+                
+                bool  result = _if.exportToPng(nameExportPng, roi, scan_lines);
+                */
+
+             //  }
+              
+          }
+          if (1) {
+               std::string tmpConfFile = generateTempConf(pathAlgoFile,SAVE);
+                if (!tmpConfFile.size())
+                    return;
+          }
+          
 
     
      }

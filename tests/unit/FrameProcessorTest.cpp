@@ -11,6 +11,7 @@
 #include <array>
 #include "CommonTest.h"
 #include "Util.h"
+#include <vector>
 using namespace rs;
 class FrameProcessorTest : public ::testing::Test
 {
@@ -189,7 +190,7 @@ TEST_F(FrameProcessorTest, configure)
           return;
      }
      std::string algoFile = FrameProcessorTest::getAlgoFile();
-     std::string tmpConfFile = generateTempConf1(algoFile);
+     std::string tmpConfFile = generateTempConf(algoFile,ALGO);
      if (!tmpConfFile.size())
           return;
 
@@ -221,12 +222,17 @@ TEST_F(FrameProcessorTest, configure)
      auto cx_orig = cam_intrinsics.principal_point[0];
      auto cy_orig = cam_intrinsics.principal_point[1];
 
-     cam_intrinsics.principal_point[0]=-20;
-     cam_intrinsics.principal_point[1]=-60;
+     cam_intrinsics.principal_point[0] = -20;
+     cam_intrinsics.principal_point[1] = -60;
 
      result = fp.configure(calib_params, cam_intrinsics);
      excpcted = false;
      EXPECT_EQ(result, excpcted);
+
+     cam_intrinsics.principal_point[0] = cx_orig;
+     cam_intrinsics.principal_point[1] = cy_orig;
+
+      std::remove(tmpConfFile.c_str());
 
      LOG(INFO) << "FrameProcessor test configure  begin";
 }
@@ -236,31 +242,72 @@ TEST_F(FrameProcessorTest, invoke)
      LOG(INFO) << "FrameProcessor test invoke  begin";
      bool excpcted = true;
      bool result = true;
-     // auto vaule = _fp.invoke(nullptr, nullptr);
-     // EXPECT_EQ(vaule == 0, excpcted);
-     // LOG(INFO) << "FrameProcessor test invoke  end";
-     // TODO
-
-     // try {
-
-     //       std::array<short int, 4> container{1, 2, 3, 4};
-     //        std::array<unsigned short int, 10> container1{1, 2, 3, 4,5,6,7,8,9,10};
-     //       vaule= _fp.invoke(container.data(), container1.data());
-
-     // } catch (...) {
-     //      int x;
-     // }
+     FrameProcessor fp;
+   
 }
 
 TEST_F(FrameProcessorTest, getProfiles)
 {
 
-     // EXPECT_EQ(operation.somma(1,2), 3);
      LOG(INFO) << "FrameProcessor test getProfiles  begin";
-     bool excpcted = true;
+     bool expected = true;
      bool result = true;
-     // auto vaule = _fp.getProfiles();
-     // EXPECT_EQ(vaule.size() == 0, excpcted);
-     // LOG(INFO) << "FrameProcessor test getProfiles  end";
-     // TODO other case
+     FrameProcessor fp;
+     auto vaule = fp.getProfiles();
+     EXPECT_EQ(vaule.size(), 0);
+
+     std::string pathAlgoFile = FrameProcessorTest::getAlgoFile();
+     std::string pathCalibXYZFile = FrameProcessorTest::getFileCalib();
+     std::string pathIntCalXYZFile = FrameProcessorTest::getFileIntCalib();
+
+     std::string tmpConfFile = generateTempConf(pathAlgoFile,ALGO);
+     if (!tmpConfFile.size())
+          return;
+
+     rs::Intrinsics cam_intrinsics;
+     result = rs::io::readCameraIntrinsics(pathIntCalXYZFile, 3, cam_intrinsics); // 3 = ADTF "lr-qnative"
+     EXPECT_EQ(result, expected);
+     if (!result)
+     {
+          LOG(ERROR) << "Error on load camera intrinsics from file " << pathIntCalXYZFile;
+          return;
+     }
+     rs::ConveyorCalibrationParameters calib_params;
+     result = rs::io::readConveyorCalibration(pathCalibXYZFile, calib_params);
+     EXPECT_EQ(result, expected);
+     if (!result)
+     {
+          LOG(ERROR) << "Error on load  target calibration from file  " << pathCalibXYZFile;
+          return;
+     }
+     result = fp.initialize(tmpConfFile);
+     expected = true;
+     EXPECT_EQ(result, expected);
+     if (!result)
+     {
+          LOG(ERROR) << "Error on load configuration  file  " << pathAlgoFile;
+          return;
+     }
+     fp.configure(calib_params, cam_intrinsics);
+     fp.configure(calib_params, cam_intrinsics);
+     std::string homeDir = std::getenv("HOME");
+     std::vector<char> frame_buffer;
+     int frame_width = cam_intrinsics.image_size[0];
+     int frame_height = cam_intrinsics.image_size[1];
+     XyzFrame xyz_frame;
+     std::string xyz_dataFile = findFileRecursively(homeDir, xyz_DataMap[THREE_PROF]);
+     result = rs::utils::filesystem::ReadFileToBuffer(xyz_dataFile, frame_buffer);
+     expected = true;
+     EXPECT_EQ(result, expected);
+     if (!result)
+     {
+          LOG(ERROR) << "Error on load XYZ data file  " << xyz_dataFile;
+          return;
+     }
+     xyz_frame.prepare(frame_height, frame_width);
+     xyz_frame.copyPoints(reinterpret_cast<int16_t *>(frame_buffer.data()), frame_height * frame_width);
+     size_t num_profiles = fp.invoke(xyz_frame.getPoints(), nullptr);
+     EXPECT_EQ(num_profiles, THREE_PROF);
+     std::remove(tmpConfFile.c_str());
+     LOG(INFO) << "FrameProcessor test getProfiles  begin";
 }

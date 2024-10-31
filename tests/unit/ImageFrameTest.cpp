@@ -89,6 +89,7 @@ TEST_F(ImageFrameTest, frameAll)
      bool result = _if.exportToPng(nameExportPng, roi, scan_lines);
      bool excepted = true;
      EXPECT_EQ(result, excepted);
+      std::remove(nameExportPng.c_str());
      LOG(INFO) << "ImageFrameTest test ReadCCB  end";
 
  }

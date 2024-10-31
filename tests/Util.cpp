@@ -1,9 +1,6 @@
 #include "Util.h"
-#include <sstream> 
+#include <sstream>
 #include <iomanip>
-
-
-
 
 #include <string>
 #include <algorithm>
@@ -13,14 +10,16 @@
 #include <iostream>
 #include <fstream>
 #include <glog/logging.h>
-std::string getDirectoryPath(const std::string& filePath) {
- 
+std::string getDirectoryPath(const std::string &filePath)
+{
+
     //  Unix-like e '\\'  Windows
     size_t lastSeparator = filePath.find_last_of("/\\");
-    if (lastSeparator == std::string::npos) {
+    if (lastSeparator == std::string::npos)
+    {
         return filePath;
     }
-    
+
     return filePath.substr(0, lastSeparator + 1);
 }
 /*
@@ -75,6 +74,63 @@ std::string findFileRecursively(const std::string &directory, const std::string 
     closedir(dir);
     return "";
 }
+bool removeDirectory(std::string path)
+{
+    DIR *dir = opendir(path.c_str());
+    if (dir == nullptr)
+    {
+         LOG(ERROR) << "Error opening directory: " << path ;
+         
+       return false;
+    }
+
+    struct dirent *entry;
+    while ((entry = readdir(dir)) != nullptr)
+    {
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+        {
+            continue;
+        
+        }
+
+        std::string fullPath = path + "/" + entry->d_name;
+        struct stat statbuf;
+        if (stat(fullPath.c_str(), &statbuf) == 0)
+        {
+            if (S_ISDIR(statbuf.st_mode))
+            {
+                if (!removeDirectory(fullPath.c_str()))
+                {
+                    closedir(dir);
+                    return false;
+                }
+            }
+            else
+            {
+                if (remove(fullPath.c_str()) != 0)
+                {
+                    closedir(dir);
+                    return false;
+                }
+            }
+        }
+        else
+        {
+             LOG(ERROR) << "Error accessing file/directory: " << fullPath;
+            closedir(dir);
+            return false;
+        }
+    }
+
+    closedir(dir);
+    if (rmdir(path.c_str()) != 0)
+    {
+        LOG(ERROR) << "Error removing directory: " << path ;
+        return false;
+    }
+
+    return true;
+}
 std::string getTimeStamp()
 {
     std::stringstream timeStamp;
@@ -82,24 +138,40 @@ std::string getTimeStamp()
     timeStamp << std::put_time(localtime(&now_c), "%Y%m%d_%H%M%S");
     return timeStamp.str();
 }
-std::string generateTempConf1(std::string &confFile)
+std::string generateTempConf(std::string &confFile, Keyonfig key)
 {
-     std::string newFileGenerate;
+    std::string newFileGenerate;
 
-     nlohmann::json json_value;
-     bool result = rs::io::readJsonFile(confFile, json_value);
-     if (!result)
-     {
-         // LOG(ERROR) << "Error on read file : " << confFile;
-          return newFileGenerate;
-     }
+    nlohmann::json json_value;
+    bool result = rs::io::readJsonFile(confFile, json_value);
+    if (!result)
+    {
+        // LOG(ERROR) << "Error on read file : " << confFile;
+        return newFileGenerate;
+    }
+    if (key == ALGO)
+    {
+        std::string absolutePath = getDirectoryPath(confFile);
+        std::string nameTmpConf = std::string("Tmp_") + nameAlgoConf;
+        newFileGenerate = absolutePath + "/" + nameTmpConf;
+        json_value["algo"][0]["config_file"] = absolutePath + "/" + nameprofile3DCalcConf;
+        std::ofstream o(newFileGenerate);
+        o << std::setw(4) << json_value << std::endl;
+        o.close();
+    }
+    else if (key == SAVE)
+    {
 
-     std::string absolutePath = getDirectoryPath(confFile);
-     std::string nameTmpConf = std::string("Tmp_") + nameAlgoConf;
-     newFileGenerate = absolutePath + "/" + nameTmpConf;
-     json_value["algo"][0]["config_file"] = absolutePath + "/" + nameprofile3DCalcConf;
-     std::ofstream o(newFileGenerate);
-     o << std::setw(4) << json_value << std::endl;
-     o.close();
-     return newFileGenerate;
+        std::string homeDir = std::getenv("HOME");
+
+        std::string currentOutDir = json_value["save"]["out_dir"];
+        std::string newDir = homeDir + "/" + currentOutDir;
+        json_value["save"]["out_dir"] = newDir;
+        std::cout << "Dir = " << currentOutDir;
+        std::ofstream o(newFileGenerate);
+        o << std::setw(4) << json_value << std::endl;
+        o.close();
+    }
+
+    return newFileGenerate;
 }
