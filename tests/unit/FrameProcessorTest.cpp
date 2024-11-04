@@ -12,6 +12,7 @@
 #include "CommonTest.h"
 #include "Util.h"
 #include <vector>
+#include <set>
 using namespace rs;
 class FrameProcessorTest : public ::testing::Test
 {
@@ -189,8 +190,9 @@ TEST_F(FrameProcessorTest, configure)
           LOG(ERROR) << "Error on load  target calibration from file  " << calibFile;
           return;
      }
+     std::set<Keyonfig> keys {ALGO};
      std::string algoFile = FrameProcessorTest::getAlgoFile();
-     std::string tmpConfFile = generateTempConf(algoFile,ALGO);
+     std::string tmpConfFile = generateTempConf(algoFile,keys);
      if (!tmpConfFile.size())
           return;
 
@@ -260,9 +262,19 @@ TEST_F(FrameProcessorTest, getProfiles)
      std::string pathCalibXYZFile = FrameProcessorTest::getFileCalib();
      std::string pathIntCalXYZFile = FrameProcessorTest::getFileIntCalib();
 
-     std::string tmpConfFile = generateTempConf(pathAlgoFile,ALGO);
+      std::set <Keyonfig> keys {ALGO,OUTDIR};
+     std::string tmpConfFile = generateTempConf(pathAlgoFile,keys);
      if (!tmpConfFile.size())
           return;
+      nlohmann::json json_value;
+     result = rs::io::readJsonFile(tmpConfFile, json_value);
+     if (!result)
+     {
+          LOG(ERROR) << "Error on load configuration file " << tmpConfFile;
+          return;
+     }
+     std::string outDir = json_value["save"]["out_dir"];
+     rs::utils::filesystem::MakeDirectory(outDir);
 
      rs::Intrinsics cam_intrinsics;
      result = rs::io::readCameraIntrinsics(pathIntCalXYZFile, 3, cam_intrinsics); // 3 = ADTF "lr-qnative"
@@ -309,5 +321,6 @@ TEST_F(FrameProcessorTest, getProfiles)
      size_t num_profiles = fp.invoke(xyz_frame.getPoints(), nullptr);
      EXPECT_EQ(num_profiles, THREE_PROF);
      std::remove(tmpConfFile.c_str());
+     removeDirectory(outDir);
      LOG(INFO) << "FrameProcessor test getProfiles  begin";
 }

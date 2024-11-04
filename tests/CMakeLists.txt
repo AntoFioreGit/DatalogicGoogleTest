@@ -25,6 +25,7 @@ add_executable(testAppRsaAlgorithms
                     unit/AdTof_IntrisicsTest.cpp
                     unit/ImageFrameTest.cpp
                     unit/XYZFrameTest.cpp
+                    functional/CheckGenerateOutputTest.cpp
                     InitializeEnvironment.cpp
                     Util.cpp)
                     

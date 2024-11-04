@@ -164,7 +164,7 @@ namespace rs
                 }
 
                 struct stat st;
-                struct dirent* entry = readdir(dir);
+                struct dirent* entry=nullptr;// = readdir(dir);
                 while ((entry = readdir(dir)) != NULL)
                 {
                     const std::string file_name = entry->d_name;

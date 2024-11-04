@@ -60,7 +60,6 @@ std::string XYZFrameTest::_intrCalXYZFrameConf = "";
 std::string XYZFrameTest::_calibXYZFrameConf = "";
 std::string XYZFrameTest::_algoConf = "";
 
-
 TEST_F(XYZFrameTest, checkProfiles)
 {
 
@@ -71,9 +70,20 @@ TEST_F(XYZFrameTest, checkProfiles)
      bool expected = true;
      bool result = true;
 
-     std::string tmpConfFile = generateTempConf(pathAlgoFile,ALGO);
+     std::set<Keyonfig> keys{ALGO, OUTDIR};
+     std::string tmpConfFile = generateTempConf(pathAlgoFile, keys);
      if (!tmpConfFile.size())
           return;
+
+     nlohmann::json json_value;
+     result = rs::io::readJsonFile(tmpConfFile, json_value);
+     if (!result)
+     {
+          LOG(ERROR) << "Error on load configuration file " << tmpConfFile;
+          return;
+     }
+     std::string outDir = json_value["save"]["out_dir"];
+     rs::utils::filesystem::MakeDirectory(outDir);
 
      rs::Intrinsics cam_intrinsics;
      result = rs::io::readCameraIntrinsics(pathIntCalXYZFile, 3, cam_intrinsics); // 3 = ADTF "lr-qnative"
@@ -163,51 +173,51 @@ TEST_F(XYZFrameTest, checkProfiles)
           int expectedXYZPoints = idx * NUMBER_POINT_4_PROFILE;
           EXPECT_EQ(countPointValidResult, expectedXYZPoints);
           LOG(INFO) << "Test Profiles End. Numerber profiles expected:  " << idx;
-          
-               if (0) {
 
-                if (idx != THREE_PROF )continue;
+          if (0)
+          {
 
- float gamma = 0.5;
-        std::vector<uint8_t> lut(256);
-        for (int k = 0; k < 256; k++)
-        {
-            lut[k] = cv::saturate_cast<uint8_t>(pow((k / 255.0f), gamma) * 255.0f);
-        }
-         ab_frame.prepare(1024,512);
-                cv::Mat ab;
-              ab_frame.convertToMat(ab);
-              rs::Rect roi{0, 0, 1024,512};
-                const std::vector<size_t> scan_lines{3};
-                 std::string nameExportPng = "PippoImage_" + getTimeStamp() + ".png";
-                 bool  result = ab_frame.exportToPng(nameExportPng, roi, scan_lines);
+               if (idx != THREE_PROF)
+                    continue;
 
+               float gamma = 0.5;
+               std::vector<uint8_t> lut(256);
+               for (int k = 0; k < 256; k++)
+               {
+                    lut[k] = cv::saturate_cast<uint8_t>(pow((k / 255.0f), gamma) * 255.0f);
+               }
+               ab_frame.prepare(1024, 512);
+               cv::Mat ab;
+               ab_frame.convertToMat(ab);
+               rs::Rect roi{0, 0, 1024, 512};
+               const std::vector<size_t> scan_lines{3};
+               std::string nameExportPng = "PippoImage_" + getTimeStamp() + ".png";
+               bool result = ab_frame.exportToPng(nameExportPng, roi, scan_lines);
 
-                 auto aspetc = ab.size().aspectRatio();
-     auto height = ab.size().height;
-     auto width = ab.size().width;
+               auto aspetc = ab.size().aspectRatio();
+               auto height = ab.size().height;
+               auto width = ab.size().width;
 
-     //     cv::Mat norm_ab(ab.size(), CV_8U);
-     //     cv::normalize(ab, norm_ab, 0, 255, cv::NORM_MINMAX, CV_8U);
-     //     cv::LUT(norm_ab, lut, norm_ab);
-     //     cv::namedWindow("AB", cv::WINDOW_AUTOSIZE);
-     //     cv::imshow("AB", norm_ab);
-     //     cv::waitKey(0);
-     //     rs::ImageFrame _if;
-         
+               //     cv::Mat norm_ab(ab.size(), CV_8U);
+               //     cv::normalize(ab, norm_ab, 0, 255, cv::NORM_MINMAX, CV_8U);
+               //     cv::LUT(norm_ab, lut, norm_ab);
+               //     cv::namedWindow("AB", cv::WINDOW_AUTOSIZE);
+               //     cv::imshow("AB", norm_ab);
+               //     cv::waitKey(0);
+               //     rs::ImageFrame _if;
 
-        // _if.prepare(512,  512);
-        //  _if.copyPixels((uint16_t *) ab_frame.getPixels(),frame_height * frame_width);
-        
-             // if (idx == THREE_PROF ){
-              //       rs::ImageFrame _if;
+               // _if.prepare(512,  512);
+               //  _if.copyPixels((uint16_t *) ab_frame.getPixels(),frame_height * frame_width);
+
+               // if (idx == THREE_PROF ){
+               //       rs::ImageFrame _if;
                /*
                cv::Mat mat;
                _if.prepare(512,  512);
                _if.copyPixels((uint16_t *) xyz_frame.getPoints(),frame_height * frame_width);
                 _if.convertToMat(mat);
-                
-                 
+
+
                 ;
 
 
@@ -215,23 +225,42 @@ TEST_F(XYZFrameTest, checkProfiles)
                const std::vector<size_t> scan_lines{3};
                 rs::Rect roi{0, 0, mat.size().width, mat.size().height};
                  std::string nameExportPng = "PippoImage_" + getTimeStamp() + ".png";
-                
+
                 bool  result = _if.exportToPng(nameExportPng, roi, scan_lines);
                 */
 
-             //  }
-              
+               //  }
           }
-          if (1) {
-               std::string tmpConfFile = generateTempConf(pathAlgoFile,SAVE);
-                if (!tmpConfFile.size())
-                    return;
+          if (0) {
+                 nlohmann::json json_value;
+               bool result = rs::io::readJsonFile(tmpConfFile, json_value);
+               std::string pathOut = json_value["save"]["out_dir"];
+               bool full_path=false;
+               std::vector<std::string> filenames;
+                rs::utils::filesystem::ListFilesInDirectoryWithExtension(pathOut,
+                                                   "png",
+                                                   filenames,
+                                                   full_path);
+               int numb = filenames.size();
+               std::cout <<  "numb= " << numb;
           }
-          
 
-    
+          if (0)
+          {
+               std::set<Keyonfig> keys{ALGO, OUTDIR,DISABLE_SAVE_XYZ};
+               std::string tmpConfFile = generateTempConf(pathAlgoFile, keys);
+               if (!tmpConfFile.size())
+                    return;
+
+               nlohmann::json json_value;
+               bool result = rs::io::readJsonFile(tmpConfFile, json_value);
+               std::string pathOut = json_value["save"]["out_dir"];
+               rs::utils::filesystem::MakeDirectory(pathOut);
+               removeDirectory(pathOut);
+          }
      }
      std::remove(tmpConfFile.c_str());
+     removeDirectory(outDir);
 
      LOG(INFO) << "XYZFrameTest test checkProfiles  end";
 }

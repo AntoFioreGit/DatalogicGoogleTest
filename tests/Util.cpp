@@ -79,9 +79,9 @@ bool removeDirectory(std::string path)
     DIR *dir = opendir(path.c_str());
     if (dir == nullptr)
     {
-         LOG(ERROR) << "Error opening directory: " << path ;
-         
-       return false;
+        LOG(ERROR) << "Error opening directory: " << path;
+
+        return false;
     }
 
     struct dirent *entry;
@@ -90,7 +90,6 @@ bool removeDirectory(std::string path)
         if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
         {
             continue;
-        
         }
 
         std::string fullPath = path + "/" + entry->d_name;
@@ -116,7 +115,7 @@ bool removeDirectory(std::string path)
         }
         else
         {
-             LOG(ERROR) << "Error accessing file/directory: " << fullPath;
+            LOG(ERROR) << "Error accessing file/directory: " << fullPath;
             closedir(dir);
             return false;
         }
@@ -125,7 +124,7 @@ bool removeDirectory(std::string path)
     closedir(dir);
     if (rmdir(path.c_str()) != 0)
     {
-        LOG(ERROR) << "Error removing directory: " << path ;
+        LOG(ERROR) << "Error removing directory: " << path;
         return false;
     }
 
@@ -138,7 +137,7 @@ std::string getTimeStamp()
     timeStamp << std::put_time(localtime(&now_c), "%Y%m%d_%H%M%S");
     return timeStamp.str();
 }
-std::string generateTempConf(std::string &confFile, Keyonfig key)
+std::string generateTempConf(std::string &confFile, std::set<Keyonfig> keys)
 {
     std::string newFileGenerate;
 
@@ -149,29 +148,38 @@ std::string generateTempConf(std::string &confFile, Keyonfig key)
         // LOG(ERROR) << "Error on read file : " << confFile;
         return newFileGenerate;
     }
-    if (key == ALGO)
+    std::string absolutePath = getDirectoryPath(confFile);
+    std::string nameTmpConf = std::string("Tmp_") + nameAlgoConf;
+    newFileGenerate = absolutePath + "/" + nameTmpConf;
+    std::string homeDir = std::getenv("HOME");
+    for (auto key : keys)
     {
-        std::string absolutePath = getDirectoryPath(confFile);
-        std::string nameTmpConf = std::string("Tmp_") + nameAlgoConf;
-        newFileGenerate = absolutePath + "/" + nameTmpConf;
-        json_value["algo"][0]["config_file"] = absolutePath + "/" + nameprofile3DCalcConf;
-        std::ofstream o(newFileGenerate);
-        o << std::setw(4) << json_value << std::endl;
-        o.close();
+        if (key == ALGO)
+        {
+            json_value["algo"][0]["config_file"] = absolutePath + "/" + nameprofile3DCalcConf;
+        }
+        else if (key == OUTDIR)
+        {
+            std::string currentOutDir = json_value["save"]["out_dir"];
+            std::string newDir = homeDir + "/" + currentOutDir;
+            json_value["save"]["out_dir"] = newDir;
+        } else if (key == ENABLE_SAVE_AB)
+        {           
+            json_value["save"]["ab"] = true;
+        } else if (key == DISABLE_SAVE_AB)
+        {           
+            json_value["save"]["ab"] = false;
+        } else if (key == DISABLE_SAVE_XYZ)
+        {           
+            json_value["save"]["xyz"] = false;
+        } else if (key == ENABLE_SAVE_XYZ)
+        {           
+            json_value["save"]["xyz"] = true;
+        }
     }
-    else if (key == SAVE)
-    {
+    std::ofstream o(newFileGenerate);
+    o << std::setw(4) << json_value << std::endl;
+    o.close();
 
-        std::string homeDir = std::getenv("HOME");
-
-        std::string currentOutDir = json_value["save"]["out_dir"];
-        std::string newDir = homeDir + "/" + currentOutDir;
-        json_value["save"]["out_dir"] = newDir;
-        std::cout << "Dir = " << currentOutDir;
-        std::ofstream o(newFileGenerate);
-        o << std::setw(4) << json_value << std::endl;
-        o.close();
-    }
-
-    return newFileGenerate;
+       return newFileGenerate;
 }

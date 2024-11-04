@@ -247,7 +247,7 @@ bool FrameProcessor::saveFrame(rs::Frame& frame, bool new_frame)
    // std::string file_name = "data/" + frame_type_str + std::to_string(file_id);
     std::string file_name = output_dir_+"/" + frame_type_str + std::to_string(file_id);
 #if defined(__linux__)
-    file_name = "/" + file_name;
+   // file_name = "/" + file_name;
 #endif
 
     if (frame_type == FrameType::AB)
