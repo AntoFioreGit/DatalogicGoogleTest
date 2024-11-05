@@ -23,11 +23,10 @@ public:
 protected:
      void SetUp() override
      {
-          std::string homeDir = std::getenv("HOME");
-
+         std::string homeDir=std::getenv("WORKSPACE")!=nullptr?std::getenv("WORKSPACE"):std::getenv("HOME");
+             
           if (!_fileTestRaw.size())
-          {
-               //  fs::path homeDir = std::getenv("HOME");
+          {               
                _fileTestRaw = findFileRecursively(homeDir, nameFileTestRaw);
           }
 

@@ -19,11 +19,10 @@ public:
 protected:
      void SetUp() override
      {
-          std::string homeDir = std::getenv("HOME");
-
+          std::string homeDir=std::getenv("WORKSPACE")!=nullptr?std::getenv("WORKSPACE"):std::getenv("HOME");                   
           if (!_intrinsicsCalibConfig.size())
           {
-               //  fs::path homeDir = std::getenv("HOME");
+             
                _intrinsicsCalibConfig = findFileRecursively(homeDir, nameIntrinsicsCalibrConf);
           }
 

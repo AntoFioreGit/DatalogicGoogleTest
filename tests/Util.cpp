@@ -151,7 +151,7 @@ std::string generateTempConf(std::string &confFile, std::set<Keyonfig> keys)
     std::string absolutePath = getDirectoryPath(confFile);
     std::string nameTmpConf = std::string("Tmp_") + nameAlgoConf;
     newFileGenerate = absolutePath + "/" + nameTmpConf;
-    std::string homeDir = std::getenv("HOME");
+    std::string homeDir = std::getenv("WORKSPACE")!=nullptr?std::getenv("WORKSPACE"):std::getenv("HOME");
     for (auto key : keys)
     {
         if (key == ALGO)

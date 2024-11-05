@@ -32,7 +32,7 @@ public:
 protected:
      void SetUp() override
      {
-          std::string homeDir = std::getenv("HOME");
+          std::string homeDir = std::getenv("WORKSPACE")!=nullptr?std::getenv("WORKSPACE"):std::getenv("HOME");             
 
           if (!_intrCalXYZFrameConf.size())
           {
@@ -113,7 +113,7 @@ TEST_F(CheckGenerateOutputTest, checkGenerateOutput)
           return;
      }
      fp.configure(calib_params, cam_intrinsics);
-     std::string homeDir = std::getenv("HOME");
+     std::string homeDir = std::getenv("WORKSPACE")!=nullptr?std::getenv("WORKSPACE"):std::getenv("HOME");
      std::vector<char> frame_buffer;
      int frame_width = cam_intrinsics.image_size[0];
      int frame_height = cam_intrinsics.image_size[1];
@@ -227,7 +227,7 @@ TEST_F(CheckGenerateOutputTest, checkGenerateOutputOnlyXYZ)
           return;
      }
      fp.configure(calib_params, cam_intrinsics);
-     std::string homeDir = std::getenv("HOME");
+     std::string homeDir = std::getenv("WORKSPACE")!=nullptr?std::getenv("WORKSPACE"):std::getenv("HOME");
      std::vector<char> frame_buffer;
      int frame_width = cam_intrinsics.image_size[0];
      int frame_height = cam_intrinsics.image_size[1];
@@ -341,7 +341,7 @@ TEST_F(CheckGenerateOutputTest, checkGenerateOutputOnlyPng)
           return;
      }
      fp.configure(calib_params, cam_intrinsics);
-     std::string homeDir = std::getenv("HOME");
+     std::string homeDir = std::getenv("WORKSPACE")!=nullptr?std::getenv("WORKSPACE"):std::getenv("HOME");
      std::vector<char> frame_buffer;
      int frame_width = cam_intrinsics.image_size[0];
      int frame_height = cam_intrinsics.image_size[1];
@@ -457,7 +457,7 @@ TEST_F(CheckGenerateOutputTest, checkGenerateOutputEmpty)
           return;
      }
      fp.configure(calib_params, cam_intrinsics);
-     std::string homeDir = std::getenv("HOME");
+     std::string homeDir = std::getenv("WORKSPACE")!=nullptr?std::getenv("WORKSPACE"):std::getenv("HOME");
      std::vector<char> frame_buffer;
      int frame_width = cam_intrinsics.image_size[0];
      int frame_height = cam_intrinsics.image_size[1];
