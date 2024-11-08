@@ -77,6 +77,11 @@ std::vector<size_t> Profile3dCalculator::getScanlines(float c[3], int anchor_row
                                          0, camera_params_.image_size_.height));
 
     LOG(INFO) << "line_step = " << line_step;
+   // Questo fix è stato segnalato. Per il momento viene gestito in questo branch
+    if ( line_step == 0) {
+        return std::vector<size_t>(line_step) ;
+    }
+
 
     // Get rows from bottom to top, i.e. in the travel direction
     std::vector<size_t> scan_lines;

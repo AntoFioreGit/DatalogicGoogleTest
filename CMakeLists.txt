@@ -77,4 +77,6 @@ target_include_directories(RSAAlgorithmsLib PRIVATE ${OpenCV_INCLUDE_DIRS})
 
 
 # Aggiungere la directory dei test
+list(APPEND CMAKE_CTEST_ARGUMENTS "--output-junit" "${CMAKE_BINARY_DIR}/unittests_results.xml")
+enable_testing()
 add_subdirectory(tests)

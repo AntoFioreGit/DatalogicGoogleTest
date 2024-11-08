@@ -176,7 +176,7 @@ TEST_F(CheckGenerateOutputTest, checkGenerateOutput)
 }
 TEST_F(CheckGenerateOutputTest, checkGenerateOutputOnlyXYZ)
 {
-    
+
 
      LOG(INFO) << "CheckGenerateOutputTest test checkGenerateOutputOnlyXYZ  start";
      std::string pathAlgoFile = CheckGenerateOutputTest::getAlgoFile();

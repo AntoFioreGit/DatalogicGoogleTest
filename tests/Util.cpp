@@ -151,7 +151,7 @@ std::string generateTempConf(std::string &confFile, std::set<Keyonfig> keys)
     std::string absolutePath = getDirectoryPath(confFile);
     std::string nameTmpConf = std::string("Tmp_") + nameAlgoConf;
     newFileGenerate = absolutePath + "/" + nameTmpConf;
-    std::string homeDir = std::getenv("WORKSPACE")!=nullptr?std::getenv("WORKSPACE"):std::getenv("HOME");
+    std::string homeDir = std::getenv("WORKSPACE") != nullptr ? std::getenv("WORKSPACE") : std::getenv("HOME");
     for (auto key : keys)
     {
         if (key == ALGO)
@@ -163,17 +163,21 @@ std::string generateTempConf(std::string &confFile, std::set<Keyonfig> keys)
             std::string currentOutDir = json_value["save"]["out_dir"];
             std::string newDir = homeDir + "/" + currentOutDir;
             json_value["save"]["out_dir"] = newDir;
-        } else if (key == ENABLE_SAVE_AB)
-        {           
+        }
+        else if (key == ENABLE_SAVE_AB)
+        {
             json_value["save"]["ab"] = true;
-        } else if (key == DISABLE_SAVE_AB)
-        {           
+        }
+        else if (key == DISABLE_SAVE_AB)
+        {
             json_value["save"]["ab"] = false;
-        } else if (key == DISABLE_SAVE_XYZ)
-        {           
+        }
+        else if (key == DISABLE_SAVE_XYZ)
+        {
             json_value["save"]["xyz"] = false;
-        } else if (key == ENABLE_SAVE_XYZ)
-        {           
+        }
+        else if (key == ENABLE_SAVE_XYZ)
+        {
             json_value["save"]["xyz"] = true;
         }
     }
@@ -181,5 +185,81 @@ std::string generateTempConf(std::string &confFile, std::set<Keyonfig> keys)
     o << std::setw(4) << json_value << std::endl;
     o.close();
 
-       return newFileGenerate;
+    return newFileGenerate;
+}
+
+std::string generateTempCalibParam(std::string &calibFile, std::map<KeyCalibPar, float> keyVal)
+{
+    std::string newFileGenerate;
+    nlohmann::json json_value;
+    bool result = rs::io::readJsonFile(calibFile, json_value);
+    if (!result)
+    {
+        LOG(ERROR) << "Error on read file : " << calibFile;
+        return newFileGenerate;
+    }
+     std::string absolutePath = getDirectoryPath(calibFile);
+    std::string nameTmpConib = std::string("Tmp_") + nameCalibConf;
+    newFileGenerate = absolutePath + "/" + nameTmpConib;
+
+    for (auto item : keyVal)
+    {
+        switch (item.first)
+        {
+        case ROI_X:
+            json_value["roi_x"] = item.second;
+            break;
+        case ROI_Y:
+            json_value["roi_y"] = item.second;
+            break;
+        case ROI_WIDTH:
+            json_value["roi_width"] = item.second;
+            break;
+        case ROI_HEIGHT:
+            json_value["roi_height"] = item.second;
+            break;
+        case RANGE_X_MIN:
+            json_value["range_x_min"] = item.second;
+            break;
+        case RANGE_X_MAX:
+            json_value["range_x_max"] = item.second;
+            break;
+        case RANGE_Y_MAX:
+            json_value["range_y_max"] = item.second;
+            break;
+        case RANGE_Y_MIN:
+            json_value["range_y_min"] = item.second;
+            break;
+        case RANGE_Z_MIN:
+            json_value["range_z_min"] = item.second;
+            break;
+        case RANGE_Z_MAX:
+            json_value["range_z_max"] = item.second;
+            break;
+        case CAMERA_POSITION_X:
+            json_value["camera_position_x"] = item.second;
+            break;
+        case CAMERA_POSITION_Y:
+            json_value["camera_position_y"] = item.second;
+            break;
+        case CAMERA_POSITION_Z:
+            json_value["camera_position_z"] = item.second;
+            break;
+        case CAMERA_ORIENTATION_X:
+            json_value["camera_orientation_x"] = item.second;
+            break;
+        case CAMERA_ORIENTATION_Y:
+            json_value["camera_orientation_y"] = item.second;
+            break;
+        case CAMERA_ORIENTATION_Z:
+            json_value["camera_orientation_z"] = item.second;
+            break;
+        default:
+            break;
+        }
+    }
+    std::ofstream o(newFileGenerate);
+    o << std::setw(4) << json_value << std::endl;
+    o.close();
+    return newFileGenerate;
 }

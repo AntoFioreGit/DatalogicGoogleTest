@@ -1,4 +1,3 @@
-enable_testing()
 
 # Include il modulo FetchContent per scaricare GoogleTest
 include(FetchContent)
@@ -14,20 +13,20 @@ include(GoogleTest)
 
 # Crea l'eseguibile, chiamato testTechie, del sorgente di test
 add_executable(testAppRsaAlgorithms                                       
-                    unit/FrameProcessorTest.cpp
-                    unit/File_JsonTest.cpp
-                    unit/Calib_Io_Test.cpp
-                    unit/CameraParameterTest.cpp
-                    unit/PtrParameterTest.cpp
-                    unit/InvalidParameterTest.cpp
-                    unit/ParametersContainerTest.cpp
-                    unit/CcbTest.cpp
-                    unit/AdTof_IntrisicsTest.cpp
-                    unit/ImageFrameTest.cpp
-                    unit/XYZFrameTest.cpp
-                    functional/CheckGenerateOutputTest.cpp
-                    InitializeEnvironment.cpp
-                    Util.cpp)
+                 unit/FrameProcessorTest.cpp
+                  unit/File_JsonTest.cpp
+                 unit/Calib_Io_Test.cpp
+                  unit/CameraParameterTest.cpp
+                  unit/PtrParameterTest.cpp
+                  unit/InvalidParameterTest.cpp
+                  unit/ParametersContainerTest.cpp
+                  unit/CcbTest.cpp
+                  unit/AdTof_IntrisicsTest.cpp
+                  unit/ImageFrameTest.cpp
+                  unit/XYZFrameTest.cpp                    
+                  functional/CheckGenerateOutputTest.cpp
+                  InitializeEnvironment.cpp
+                  Util.cpp)
                     
                     
 
