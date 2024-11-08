@@ -492,7 +492,6 @@ TEST_F(XYZFrameTest, checkNoGenerateProfiles_3)
      std::string pathIntCalXYZFile = XYZFrameTest::getFileIntCalibXYZFrame();
      bool expected = true;
      bool result = true;
-
      std::set<Keyonfig> keys{ALGO, OUTDIR};
      std::string tmpConfFile = generateTempConf(pathAlgoFile, keys);
      if (!tmpConfFile.size())
