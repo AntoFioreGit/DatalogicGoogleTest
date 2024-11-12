@@ -22,6 +22,8 @@
 using namespace rs;
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
+
+
 class XYZFrameTest : public ::testing::Test
 {
 public:
@@ -61,6 +63,7 @@ protected:
 std::string XYZFrameTest::_intrCalXYZFrameConf = "";
 std::string XYZFrameTest::_calibXYZFrameConf = "";
 std::string XYZFrameTest::_algoConf = "";
+
 
 TEST_F(XYZFrameTest, checkProfiles)
 {

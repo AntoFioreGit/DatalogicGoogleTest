@@ -12,8 +12,10 @@
 #include <vector>
 #include "types.h"
 #include "geometry.h"
-
+#include <opencv2/opencv.hpp>
+using namespace cv;
 using namespace rs;
+#include "ConfigManagerTest.h"
 
 class ImageFrameTest : public ::testing::Test
 {
@@ -41,6 +43,10 @@ protected:
 
 std::string ImageFrameTest::_fileTestRaw = "";
 
+TEST_F(ImageFrameTest, debugReadCfg)
+{
+     ConfigManagerTest::getInstance().loadConfiguration();
+}
 TEST_F(ImageFrameTest, frameAll)
 {
 
