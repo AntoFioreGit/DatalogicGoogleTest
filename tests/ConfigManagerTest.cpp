@@ -24,23 +24,38 @@ bool ConfigManagerTest::loadConfiguration()
 
                 for (auto &json_item : json_value["Tests"])
                 {
-                    Test t;
-                    t.setNumberExwcution(json_item["NumberExectution"]);
+                    Test t
+                    {json_item["Test_Id"],json_item["Type"],json_item["XYZ_File"],
+                    json_item["Rs_AlgoConf_File"],json_item["Calib_File"],
+                    json_item["IntrisicParam_File"],json_item["NumberExectution"]
+                    };
+                    addTest(json_item["Test_Id"],t);                    
                     
                     std::cout << "Test id:" << json_item["Test_Id"] << std::endl;
+                    std::cout << "Type:" << json_item["Type"] << std::endl;
                     std::cout << "XYZ_File:" << json_item["XYZ_File"] << std::endl;
-                    std::cout << "Profile3d_File:" << json_item["Profile3d_File"] << std::endl;
+                    std::cout << "Rs_AlgoConf_File:" << json_item["Rs_AlgoConf_File"] << std::endl;
                     std::cout << "IntrisicParam_File:" << json_item["IntrisicParam_File"] << std::endl;
                     std::cout << "NumberExectution:" << json_item["NumberExectution"] << std::endl;
                     std::cout << " *** Expected Result ***" << std::endl;
                     for (auto &json_item_expected : json_item["Expected_Results"])
                     {
+                        ExpectedResults er{json_item_expected["Current_Step"],
+                                        json_item_expected["NumberProfiles"], 
+                                        json_item_expected["NumebeScanLine"]};
+
+                        addExpectedRes(json_item["Test_Id"],er);
                         std::cout << "Current_step:" << json_item_expected["Current_Step"] << std::endl;
                         std::cout << "NumberProfiles:" << json_item_expected["NumberProfiles"] << std::endl;
                         std::cout << "NumebeScanLine:" << json_item_expected["NumebeScanLine"] << std::endl;
                     }
                     for (auto &json_item_update : json_item["Update_Parameter"])
                     {
+                         UpdateParameterTest up{json_item_update["Step"],
+                                           json_item_update["File"],
+                                            json_item_update["Parameter"],
+                                            json_item_update["Value"]};
+                        addUpdPar(json_item["Test_Id"], up);
                         std::cout << "File:" << json_item_update["File"] << std::endl;
                         std::cout << "Step:" << json_item_update["Step"] << std::endl;
                         std::cout << "Parameter:" << json_item_update["Parameter"] << std::endl;

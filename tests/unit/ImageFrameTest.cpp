@@ -15,8 +15,13 @@
 #include <opencv2/opencv.hpp>
 using namespace cv;
 using namespace rs;
-#include "ConfigManagerTest.h"
 
+#include "ConfigManagerTest.h"
+#include "json.h"
+#include "file_json.h"
+#include "filesytem_helpers.h"
+#include "calib_io.h"
+#include "frame_processor.h"
 class ImageFrameTest : public ::testing::Test
 {
 public:
@@ -25,10 +30,10 @@ public:
 protected:
      void SetUp() override
      {
-         std::string homeDir=std::getenv("WORKSPACE")!=nullptr?std::getenv("WORKSPACE"):std::getenv("HOME");
-             
+          std::string homeDir = std::getenv("WORKSPACE") != nullptr ? std::getenv("WORKSPACE") : std::getenv("HOME");
+
           if (!_fileTestRaw.size())
-          {               
+          {
                _fileTestRaw = findFileRecursively(homeDir, nameFileTestRaw);
           }
 
@@ -43,10 +48,7 @@ protected:
 
 std::string ImageFrameTest::_fileTestRaw = "";
 
-TEST_F(ImageFrameTest, debugReadCfg)
-{
-     ConfigManagerTest::getInstance().loadConfiguration();
-}
+
 TEST_F(ImageFrameTest, frameAll)
 {
 
@@ -94,7 +96,6 @@ TEST_F(ImageFrameTest, frameAll)
      bool result = _if.exportToPng(nameExportPng, roi, scan_lines);
      bool excepted = true;
      EXPECT_EQ(result, excepted);
-      std::remove(nameExportPng.c_str());
+     std::remove(nameExportPng.c_str());
      LOG(INFO) << "ImageFrameTest test ReadCCB  end";
-
- }
+}

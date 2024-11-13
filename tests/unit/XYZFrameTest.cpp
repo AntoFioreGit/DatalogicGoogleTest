@@ -99,7 +99,7 @@ TEST_F(XYZFrameTest, checkProfiles)
           return;
      }
      rs::ConveyorCalibrationParameters calib_params;
-     result = rs::io::readConveyorCalibration(pathCalibXYZFile, calib_params);
+     result = rs::io::readConveyorCalibration(pathCalibXYZFile, calib_params);  
      EXPECT_EQ(result, expected);
      if (!result)
      {
@@ -160,6 +160,7 @@ TEST_F(XYZFrameTest, checkProfiles)
           xyz_frame.copyPoints(reinterpret_cast<int16_t *>(frame_buffer.data()), frame_height * frame_width);
 
           size_t num_profiles = fp.invoke(xyz_frame.getPoints(), ab_frame.getPixels());
+           // size_t num_profiles = fp.invoke(xyz_frame.getPoints(),null);
 
           EXPECT_EQ(num_profiles, idx);
 

@@ -6,6 +6,9 @@ class ExpectedResults
 public:
     ExpectedResults();
 
+     ExpectedResults(int currentStep,int _expectedNuberProfile,int expectedNumberScanLine );
+
+
     int expectedNuberProfile() const { return _expectedNuberProfile; }
     void setExpectedNuberProfile(int expectedNuberProfile) { _expectedNuberProfile = expectedNuberProfile; }
 

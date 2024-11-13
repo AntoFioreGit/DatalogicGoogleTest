@@ -22,9 +22,10 @@ add_executable(testAppRsaAlgorithms
 #                  unit/ParametersContainerTest.cpp
 #                  unit/CcbTest.cpp
 #                  unit/AdTof_IntrisicsTest.cpp
-                  unit/ImageFrameTest.cpp
+#                  unit/ImageFrameTest.cpp
 #                  unit/XYZFrameTest.cpp                    
 #                  functional/CheckGenerateOutputTest.cpp
+                  functional/ProfileTest.cpp
                   InitializeEnvironment.cpp
                   Util.cpp
                   ConfigManagerTest.cpp

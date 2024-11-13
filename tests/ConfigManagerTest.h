@@ -5,6 +5,10 @@
 #include "Test.h"
 #include "ExpectedResultsTest.h"
 #include "UpdateParameterTest.h"
+
+
+#define TYPE_PROFILE "Profile"
+
 class ConfigManagerTest {
 public:
     static ConfigManagerTest& getInstance() {

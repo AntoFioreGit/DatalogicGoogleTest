@@ -2,7 +2,7 @@
 class UpdateParameterTest {
     public:
     UpdateParameterTest();
-    
+    UpdateParameterTest(int currentStep,std::string file,std::string parameterName,std::string value);
     int currentStep() const { return _currentStep; }
     void setCurrentStep(int currentStep) { _currentStep = currentStep; }
 
