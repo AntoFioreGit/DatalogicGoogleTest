@@ -49,10 +49,56 @@ ExpectedResults *getExpectedResults(std::string idTest, int step)
      }
      return result;
 }
+
+std::string verifyAndUpdCalibrationFile(std::string idTest, int currentStep, std::string homeDir,bool &isRemoveFile)
+{
+     isRemoveFile=false;
+     std::string fullNameCalib = "";
+     std::string tmpNameFile;
+     std::map<KeyCalibPar, float> keyVal;
+     auto listUpd = ConfigManagerTest::getInstance().getUpParameter(idTest);
+     if (listUpd.size() != 0)
+     {
+          if (listUpd.front().typeFile() == TYPE_FILE_CALIB_PR)
+          {
+               tmpNameFile = listUpd.front().file();
+               for (auto &itemUpdCalib : listUpd)
+               {
+                    if (itemUpdCalib.currentStep() == currentStep)
+                    {
+                         getUpdCalibParameter(itemUpdCalib.parameterName(), itemUpdCalib.value(), keyVal);
+                    }
+               }
+          }
+     }
+     if (keyVal.size() == 0)
+     {
+          auto testMap = ConfigManagerTest::getInstance().getTestsMap();
+          if (testMap.find(idTest) == testMap.end())
+          {
+               std::cout << "Error test not found...." << std::endl;
+          }
+          else
+          {
+
+               fullNameCalib = findFileRecursively(homeDir, testMap[idTest].calibFile());
+          }
+     }
+     else
+     {
+          tmpNameFile = findFileRecursively(homeDir, tmpNameFile);
+          fullNameCalib = generateTempCalibParam(tmpNameFile, keyVal);
+          isRemoveFile=true;
+     }
+
+     return fullNameCalib;
+}
+
 std::pair<std::string, std::string> buildTmpAlgoFile(std::string homeDir, std::string nameAlgoFile)
 {
      std::pair<std::string, std::string> retValue{"", ""};
      std::string pathAlgoFile = findFileRecursively(homeDir, nameAlgoFile);
+
      std::set<Keyonfig> keys{ALGO, OUTDIR};
      std::string tmpConfFile = generateTempConf(pathAlgoFile, keys);
      if (!tmpConfFile.size())
@@ -99,6 +145,9 @@ TEST_F(ProfileTest, debugReadCfg)
           {
                for (int currentStep = 0; currentStep < test.second.numberExcution(); currentStep++)
                {
+                    
+                    bool isRemoveCalibTmpFile=false;
+                    auto tmpCalibFile = verifyAndUpdCalibrationFile(test.second.testId(), currentStep + 1, homeDir,isRemoveCalibTmpFile);
                     bool expected = true;
                     bool result = true;
 
@@ -144,7 +193,7 @@ TEST_F(ProfileTest, debugReadCfg)
                          return;
                     }*/
                     rs::ConveyorCalibrationParameters calib_params;
-                    getCalibParameter(homeDir,test.second.calibFile(),calib_params);
+                    getCalibParameter(homeDir, test.second.calibFile(), calib_params);
 
                     FrameProcessor fp;
                     result = fp.initialize(tmpConfFile);
@@ -196,6 +245,10 @@ TEST_F(ProfileTest, debugReadCfg)
                     EXPECT_EQ(countPointValidResult, expectedXYZPoints);
                     std::remove(tmpConfFile.c_str());
                     removeDirectory(outDir);
+                    if (isRemoveCalibTmpFile) {
+                         std::remove(tmpCalibFile.c_str());
+                         
+                    }
                }
           }
      }

@@ -2,7 +2,7 @@
 class UpdateParameterTest {
     public:
     UpdateParameterTest();
-    UpdateParameterTest(int currentStep,std::string file,std::string parameterName,std::string value);
+    UpdateParameterTest(int currentStep,std::string file,std::string parameterName,std::string value,std::string typeFile);
     int currentStep() const { return _currentStep; }
     void setCurrentStep(int currentStep) { _currentStep = currentStep; }
 
@@ -15,10 +15,14 @@ class UpdateParameterTest {
     std::string value() const { return _value; }
     void setValue(std::string &value) { _value = value; }
 
+    std::string typeFile() const { return _typeFile; }
+    void setTypeFile(const std::string &typeFile) { _typeFile = typeFile; }
+
     private:
 
     int _currentStep;
     std::string _file;
+    std::string _typeFile;
     std::string _parameterName;
     std::string _value;
 

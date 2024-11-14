@@ -198,7 +198,7 @@ std::string generateTempCalibParam(std::string &calibFile, std::map<KeyCalibPar,
         LOG(ERROR) << "Error on read file : " << calibFile;
         return newFileGenerate;
     }
-     std::string absolutePath = getDirectoryPath(calibFile);
+    std::string absolutePath = getDirectoryPath(calibFile);
     std::string nameTmpConib = std::string("Tmp_") + nameCalibConf;
     newFileGenerate = absolutePath + "/" + nameTmpConib;
 
@@ -262,4 +262,101 @@ std::string generateTempCalibParam(std::string &calibFile, std::map<KeyCalibPar,
     o << std::setw(4) << json_value << std::endl;
     o.close();
     return newFileGenerate;
+}
+void getUpdCalibParameter(std::string namePar, std::string value, std::map<KeyCalibPar, float> &keyVal)
+{
+
+    float valueF = std::stof(value.c_str());
+    if (namePar == "roi_x")
+    {
+        keyVal[ROI_X] = valueF;
+    }
+    else if (namePar == "roi_y")
+    {
+        keyVal[ROI_Y] = valueF;
+    }
+    else if (namePar == "roi_width")
+    {
+        keyVal[ROI_WIDTH] = valueF;
+    }
+    else if (namePar == "roi_height")
+    {
+        keyVal[ROI_HEIGHT] = valueF;
+    }
+    else if (namePar == "range_x_min")
+    {
+        keyVal[RANGE_X_MIN] = valueF;
+    }
+    else if (namePar == "range_x_max")
+    {
+        keyVal[RANGE_X_MAX] = valueF;
+    }
+    else if (namePar == "range_y_max")
+    {
+        keyVal[RANGE_Y_MAX] = valueF;
+    }
+    else if (namePar == "range_y_min")
+    {
+        keyVal[RANGE_Y_MIN] = valueF;
+    }
+    else if (namePar == "range_z_min")
+    {
+        keyVal[RANGE_Z_MIN] = valueF;
+    }
+    else if (namePar == "range_z_max")
+    {
+        keyVal[RANGE_Z_MAX] = valueF;
+    }
+    else if (namePar == "camera_position_x")
+    {
+        keyVal[CAMERA_POSITION_X] = valueF;
+    }
+    else if (namePar == "camera_position_y")
+    {
+        keyVal[CAMERA_POSITION_Y] = valueF;
+    }
+    else if (namePar == "camera_position_z")
+    {
+        keyVal[CAMERA_POSITION_Z] = valueF;
+    }
+    else if (namePar == "camera_orientation_x")
+    {
+        keyVal[CAMERA_ORIENTATION_X] = valueF;
+    }
+    else if (namePar == "camera_orientation_y")
+    {
+        keyVal[CAMERA_ORIENTATION_Y] = valueF;
+    }
+    else if (namePar == "camera_orientation_z")
+    {
+        keyVal[CAMERA_ORIENTATION_Z] = valueF;
+    }
+}
+void getUpdRsAlgoParameter(std::string namePar, std::string value, std::set<Keyonfig>& key){
+
+    if (namePar == "ab") {
+
+        if ( value == "true") {
+            key.insert(ENABLE_SAVE_AB);
+
+        } else {
+            key.insert(DISABLE_SAVE_AB);
+        }
+    } else  if (namePar == "xyz") {
+
+        if ( value == "true") {
+            key.insert(ENABLE_SAVE_XYZ);
+
+        } else {
+            key.insert(DISABLE_SAVE_XYZ);
+        }
+    } else  if (namePar == "xyz") {
+
+        if ( value == "true") {
+            key.insert(ENABLE_SAVE_XYZ);
+
+        } else {
+            key.insert(DISABLE_SAVE_XYZ);
+        }
+    }
 }

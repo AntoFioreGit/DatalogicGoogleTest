@@ -36,6 +36,10 @@ enum KeyCalibPar
     CAMERA_ORIENTATION_Y,
     CAMERA_ORIENTATION_Z
 };
+#define TYPE_FILE_CALIB_PR "Calib_Pr"
+#define TYPE_FILE_RS_ALGO "Rs_Algo"
+#define TYPE_FILE_PROF3D "Prof3D"
+
 std::string findFileRecursively(const std::string &directory, const std::string &filename);
 
 // namespace fs = std::filesystem;
@@ -45,3 +49,5 @@ std::string getDirectoryPath(const std::string &filePath);
 std::string generateTempConf(std::string &confFile, std::set<Keyonfig>);
 std::string generateTempCalibParam(std::string &calibFile, std::map<KeyCalibPar,float>);
 bool removeDirectory(std::string path);
+void getUpdCalibParameter(std::string namePar, std::string value, std::map<KeyCalibPar, float>& keyVal);
+void getUpdRsAlgoParameter(std::string namePar, std::string value, std::set<Keyonfig>& key );
