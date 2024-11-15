@@ -21,8 +21,8 @@
 				},
 				{
 					"Current_Step": 2,
-					"NumberProfiles": 3,
-					"NumebeScanLine": 30
+					"NumberProfiles": 0,
+					"NumebeScanLine": 0
 				}
 				
             ],
@@ -44,6 +44,27 @@
 						{
 							"Parameter": "range_z_max",
 							"Value": "0"
+						}
+
+						
+					]                                      
+				},
+				{
+					"File": "rs_algo_configTest.json",
+					"Type_File": "Rs_Algo",
+					"Step": 2,
+					"Parameters": [
+						{
+							"Parameter": "ab",
+							"Value": "false"
+						},
+						{
+							"Parameter": "xyz",
+							"Value": "false"
+						},
+						{
+							"Parameter": "enable",
+							"Value": "false"
 						}
 
 						

@@ -34,97 +34,13 @@ protected:
 protected:
 };
 
-ExpectedResults *getExpectedResults(std::string idTest, int step)
-{
-     ExpectedResults *result = nullptr;
-
-     auto listResult = ConfigManagerTest::getInstance().getExpectedRes(idTest);
-     for (ExpectedResults &itemResult : listResult)
-     {
-          if (itemResult.currentStep() == step)
-          {
-               result = &itemResult;
-               break;
-          }
-     }
-     return result;
-}
-
-std::string verifyAndUpdCalibrationFile(std::string idTest, int currentStep, std::string homeDir,bool &isRemoveFile)
-{
-     isRemoveFile=false;
-     std::string fullNameCalib = "";
-     std::string tmpNameFile;
-     std::map<KeyCalibPar, float> keyVal;
-     auto listUpd = ConfigManagerTest::getInstance().getUpParameter(idTest);
-     if (listUpd.size() != 0)
-     {
-          if (listUpd.front().typeFile() == TYPE_FILE_CALIB_PR)
-          {
-               tmpNameFile = listUpd.front().file();
-               for (auto &itemUpdCalib : listUpd)
-               {
-                    if (itemUpdCalib.currentStep() == currentStep)
-                    {
-                         getUpdCalibParameter(itemUpdCalib.parameterName(), itemUpdCalib.value(), keyVal);
-                    }
-               }
-          }
-     }
-     if (keyVal.size() == 0)
-     {
-          auto testMap = ConfigManagerTest::getInstance().getTestsMap();
-          if (testMap.find(idTest) == testMap.end())
-          {
-               std::cout << "Error test not found...." << std::endl;
-          }
-          else
-          {
-
-               fullNameCalib = findFileRecursively(homeDir, testMap[idTest].calibFile());
-          }
-     }
-     else
-     {
-          tmpNameFile = findFileRecursively(homeDir, tmpNameFile);
-          fullNameCalib = generateTempCalibParam(tmpNameFile, keyVal);
-          isRemoveFile=true;
-     }
-
-     return fullNameCalib;
-}
-
-std::pair<std::string, std::string> buildTmpAlgoFile(std::string homeDir, std::string nameAlgoFile)
-{
-     std::pair<std::string, std::string> retValue{"", ""};
-     std::string pathAlgoFile = findFileRecursively(homeDir, nameAlgoFile);
-
-     std::set<Keyonfig> keys{ALGO, OUTDIR};
-     std::string tmpConfFile = generateTempConf(pathAlgoFile, keys);
-     if (!tmpConfFile.size())
-          return retValue;
-     nlohmann::json json_value;
-     bool result = rs::io::readJsonFile(tmpConfFile, json_value);
-     if (!result)
-     {
-          LOG(ERROR) << "Error on load configuration file " << tmpConfFile;
-          return retValue;
-     }
-     std::string outDir = json_value["save"]["out_dir"];
-     rs::utils::filesystem::MakeDirectory(outDir);
-     retValue.first = tmpConfFile;
-     retValue.second = outDir;
-
-     return retValue;
-}
 bool getCalibParameter(std::string homeDir, std::string calibXYZFile, rs::ConveyorCalibrationParameters &calib_params)
 {
      bool ret = true;
-     std::string pathCalibXYZFile = findFileRecursively(homeDir, calibXYZFile);
-     ret = rs::io::readConveyorCalibration(pathCalibXYZFile, calib_params);
+     ret = rs::io::readConveyorCalibration(calibXYZFile, calib_params);
      if (!ret)
      {
-          LOG(ERROR) << "Error on load  target calibration from file  " << pathCalibXYZFile;
+          LOG(ERROR) << "Error on load  target calibration from file  " << calibXYZFile;
           return false;
      }
      return true;
@@ -145,33 +61,19 @@ TEST_F(ProfileTest, debugReadCfg)
           {
                for (int currentStep = 0; currentStep < test.second.numberExcution(); currentStep++)
                {
-                    
-                    bool isRemoveCalibTmpFile=false;
-                    auto tmpCalibFile = verifyAndUpdCalibrationFile(test.second.testId(), currentStep + 1, homeDir,isRemoveCalibTmpFile);
+                    std::set<Keyonfig> keys;
+                    findUpdRsAlgo(test.second.testId(), currentStep + 1, keys);
+
+                    bool isRemoveCalibTmpFile = false;
+                    auto tmpCalibFile = verifyAndUpdCalibrationFile(test.second.testId(), currentStep + 1, homeDir, isRemoveCalibTmpFile);
                     bool expected = true;
                     bool result = true;
 
-                    auto ret = buildTmpAlgoFile(homeDir, test.second.rsAlgoConfFile());
+                    auto ret = buildTmpAlgoFile(homeDir, test.second.rsAlgoConfFile(),&keys);
                     std::string tmpConfFile = ret.first;
                     std::string outDir = ret.second;
                     if (!tmpConfFile.size())
                          continue;
-                    // Get Algo File
-                    /*  std::string pathAlgoFile = findFileRecursively(homeDir, test.second.rsAlgoConfFile());
-                      std::set<Keyonfig> keys{ALGO, OUTDIR};
-                      std::string tmpConfFile = generateTempConf(pathAlgoFile, keys);
-                      if (!tmpConfFile.size())
-                           return;
-                      nlohmann::json json_value;
-                      result = rs::io::readJsonFile(tmpConfFile, json_value);
-                      if (!result)
-                      {
-                           LOG(ERROR) << "Error on load configuration file " << tmpConfFile;
-                           return;
-                      }
-                      std::string outDir = json_value["save"]["out_dir"];
-                      rs::utils::filesystem::MakeDirectory(outDir);
-                      */
 
                     std::string pathIntCalXYZFile = findFileRecursively(homeDir, test.second.intrinsicFile());
                     rs::Intrinsics cam_intrinsics;
@@ -182,18 +84,11 @@ TEST_F(ProfileTest, debugReadCfg)
                          LOG(ERROR) << "Error on load camera intrinsics from file " << pathIntCalXYZFile;
                          return;
                     }
-                    /*
-                    std::string pathCalibXYZFile = findFileRecursively(homeDir, test.second.calibFile());
                     rs::ConveyorCalibrationParameters calib_params;
-                    result = rs::io::readConveyorCalibration(pathCalibXYZFile, calib_params);
-                    EXPECT_EQ(result, expected);
-                    if (!result)
+                    if (!getCalibParameter(homeDir, tmpCalibFile, calib_params))
                     {
-                         LOG(ERROR) << "Error on load  target calibration from file  " << pathCalibXYZFile;
-                         return;
-                    }*/
-                    rs::ConveyorCalibrationParameters calib_params;
-                    getCalibParameter(homeDir, test.second.calibFile(), calib_params);
+                         continue;
+                    }
 
                     FrameProcessor fp;
                     result = fp.initialize(tmpConfFile);
@@ -245,9 +140,9 @@ TEST_F(ProfileTest, debugReadCfg)
                     EXPECT_EQ(countPointValidResult, expectedXYZPoints);
                     std::remove(tmpConfFile.c_str());
                     removeDirectory(outDir);
-                    if (isRemoveCalibTmpFile) {
+                    if (isRemoveCalibTmpFile)
+                    {
                          std::remove(tmpCalibFile.c_str());
-                         
                     }
                }
           }

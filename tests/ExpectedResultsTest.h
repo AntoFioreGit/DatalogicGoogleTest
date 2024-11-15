@@ -1,5 +1,6 @@
 #include <iostream>
-
+#ifndef ExpectedResults_h
+#define ExpectedResults_h
 class ExpectedResults
 {
 
@@ -27,3 +28,4 @@ int _expectedNumberScanLine;
 
 
 };
+#endif

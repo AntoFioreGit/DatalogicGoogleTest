@@ -1,3 +1,5 @@
+#ifndef ConfigManagerTest_h
+#define ConfigManagerTest_h
 #include <iostream>
 #define NAME_FILE_CONF "ConfigTest.json"
 #include <map>
@@ -38,3 +40,4 @@ private:
     std::map <std::string, std::list <ExpectedResults>> _expecteResultrMap;
 
 };
+#endif

@@ -42,9 +42,7 @@ bool ConfigManagerTest::loadConfiguration()
                     for (auto &json_item_update : json_item["Update_Parameter"])
                     {
                         for (auto &json_item_param : json_item_update["Parameters"])
-                        {
-
-                            std::cout << "TypeFile = " <<  json_item_update["Type_File"]<<std::endl;
+                        {                           
                             UpdateParameterTest up{json_item_update["Step"],
                                                    json_item_update["File"],
                                                    json_item_param["Parameter"],
@@ -109,9 +107,11 @@ void ConfigManagerTest::dumpConfiguration()
                     {
 
                         std::cout <<  "\t\t"<<"File:" << json_item_update["File"] << std::endl;
+                         std::cout <<  "\t\t"<<"Type_File:" << json_item_update["Type_File"] << std::endl;
                         std::cout << "\t\t"<< "Step:" << json_item_update["Step"] << std::endl;
                         std::cout << "\t\t\t"<<"Parameter:" << json_item_param["Parameter"] << std::endl;
                         std::cout << "\t\t\t"<<"Value:" << json_item_param["Value"] << std::endl;
+                        std::cout <<std::endl;
                         
                     }
                 }

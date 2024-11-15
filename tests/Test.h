@@ -1,4 +1,6 @@
 #include <iostream>
+#ifndef Test_h
+#define Test_h
 class Test {
     public:
     Test();
@@ -35,3 +37,4 @@ class Test {
     std::string _intrinsic_File;
     int _numberExecution;
 };
+#endif

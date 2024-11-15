@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <glog/logging.h>
+#include "filesytem_helpers.h"
 std::string getDirectoryPath(const std::string &filePath)
 {
 
@@ -187,6 +188,60 @@ std::string generateTempConf(std::string &confFile, std::set<Keyonfig> keys)
 
     return newFileGenerate;
 }
+std::string generateTempConf(std::string &confFile, std::map<Keyonfig,std::string> keys){
+     std::string newFileGenerate;
+      nlohmann::json json_value;
+    bool result = rs::io::readJsonFile(confFile, json_value);
+    if (!result)
+    {
+        // LOG(ERROR) << "Error on read file : " << confFile;
+        return newFileGenerate;
+    }
+    std::string absolutePath = getDirectoryPath(confFile);
+    std::string nameTmpConf = std::string("Tmp_") + nameAlgoConf;
+    newFileGenerate = absolutePath + "/" + nameTmpConf;
+    std::string homeDir = std::getenv("WORKSPACE") != nullptr ? std::getenv("WORKSPACE") : std::getenv("HOME");
+    for (auto key : keys)
+    {
+        if (key.first == ALGO)
+        {
+            json_value["algo"][0]["config_file"] = absolutePath + "/" + nameprofile3DCalcConf;
+        } else if (key.first == OUTDIR)
+        {
+            std::string currentOutDir = json_value["save"]["out_dir"];
+            std::string newDir = homeDir + "/" + currentOutDir;
+            json_value["save"]["out_dir"] = newDir;
+        } else if (key.first == SAVE_AB){
+
+            bool save=true;
+            if (key.second == "false")
+                save=false;
+            json_value["save"]["ab"] = save;    
+
+        } else if (key.first == SAVE_XYZ){
+
+            bool save=true;
+            if (key.second == "false")
+                save=false;
+            json_value["save"]["xyz"] = save;    
+
+        } else if (key.first == ENABLE){
+
+            bool save=true;
+            if (key.second == "false")
+                save=false;
+            json_value["algo"][0]["enable"] = save;    
+
+        }
+
+    }
+     std::ofstream o(newFileGenerate);
+    o << std::setw(4) << json_value << std::endl;
+    o.close();
+
+     return newFileGenerate;
+
+}
 
 std::string generateTempCalibParam(std::string &calibFile, std::map<KeyCalibPar, float> keyVal)
 {
@@ -332,31 +387,154 @@ void getUpdCalibParameter(std::string namePar, std::string value, std::map<KeyCa
         keyVal[CAMERA_ORIENTATION_Z] = valueF;
     }
 }
-void getUpdRsAlgoParameter(std::string namePar, std::string value, std::set<Keyonfig>& key){
+void getUpdRsAlgoParameter(std::string namePar, std::string value, std::set<Keyonfig> &key)
+{
 
-    if (namePar == "ab") {
+    if (namePar == "ab")
+    {
 
-        if ( value == "true") {
+        if (value == "true")
+        {
             key.insert(ENABLE_SAVE_AB);
-
-        } else {
+        }
+        else
+        {
             key.insert(DISABLE_SAVE_AB);
         }
-    } else  if (namePar == "xyz") {
+    }
+    else if (namePar == "xyz")
+    {
 
-        if ( value == "true") {
+        if (value == "true")
+        {
             key.insert(ENABLE_SAVE_XYZ);
-
-        } else {
+        }
+        else
+        {
             key.insert(DISABLE_SAVE_XYZ);
         }
-    } else  if (namePar == "xyz") {
+    }
+    else if (namePar == "xyz")
+    {
 
-        if ( value == "true") {
+        if (value == "true")
+        {
             key.insert(ENABLE_SAVE_XYZ);
-
-        } else {
+        }
+        else
+        {
             key.insert(DISABLE_SAVE_XYZ);
+        }
+    }
+}
+std::string verifyAndUpdCalibrationFile(std::string idTest, int currentStep, std::string homeDir, bool &isRemoveFile)
+{
+    isRemoveFile = false;
+    std::string fullNameCalib = "";
+    std::string tmpNameFile;
+    std::map<KeyCalibPar, float> keyVal;
+    auto listUpd = ConfigManagerTest::getInstance().getUpParameter(idTest);
+    if (listUpd.size() != 0)
+    {
+        // if (listUpd.front().typeFile() == TYPE_FILE_CALIB_PR)
+        {
+            // tmpNameFile = listUpd.front().file();
+            for (auto &itemUpdCalib : listUpd)
+            {
+                if (itemUpdCalib.typeFile() == TYPE_FILE_CALIB_PR)
+                {
+                    if (itemUpdCalib.currentStep() == currentStep)
+                    {
+                        tmpNameFile = itemUpdCalib.file();
+                        getUpdCalibParameter(itemUpdCalib.parameterName(), itemUpdCalib.value(), keyVal);
+                    }
+                }
+            }
+        }
+    }
+    if (keyVal.size() == 0)
+    {
+        auto testMap = ConfigManagerTest::getInstance().getTestsMap();
+        if (testMap.find(idTest) == testMap.end())
+        {
+            LOG(ERROR) << "Error Test:" << idTest << " Not found ";
+        }
+        else
+        {
+            fullNameCalib = findFileRecursively(homeDir, testMap[idTest].calibFile());
+        }
+    }
+    else
+    {
+        tmpNameFile = findFileRecursively(homeDir, tmpNameFile);
+        fullNameCalib = generateTempCalibParam(tmpNameFile, keyVal);
+        isRemoveFile = true;
+    }
+    return fullNameCalib;
+    if (!fullNameCalib.size())
+    {
+        LOG(ERROR) << "Error generate file  : " << tmpNameFile;
+    }
+
+    return fullNameCalib;
+}
+ExpectedResults *getExpectedResults(std::string idTest, int step)
+{
+    ExpectedResults *result = nullptr;
+
+    auto listResult = ConfigManagerTest::getInstance().getExpectedRes(idTest);
+    for (ExpectedResults &itemResult : listResult)
+    {
+        if (itemResult.currentStep() == step)
+        {
+            result = &itemResult;
+            break;
+        }
+    }
+    return result;
+}
+std::pair<std::string, std::string> buildTmpAlgoFile(std::string homeDir, std::string nameAlgoFile,std::set<Keyonfig>*Key)
+{
+    std::pair<std::string, std::string> retValue{"", ""};
+    std::string pathAlgoFile = findFileRecursively(homeDir, nameAlgoFile);
+
+    std::set<Keyonfig> keys{ALGO, OUTDIR};
+    if (Key != nullptr) {
+        for (Keyonfig  item:*Key){
+            keys.insert(item);
+
+        }
+    }
+
+    std::string tmpConfFile = generateTempConf(pathAlgoFile, keys);
+    if (!tmpConfFile.size())
+        return retValue;
+    nlohmann::json json_value;
+    bool result = rs::io::readJsonFile(tmpConfFile, json_value);
+    if (!result)
+    {
+        LOG(ERROR) << "Error on load configuration file " << tmpConfFile;
+        return retValue;
+    }
+    std::string outDir = json_value["save"]["out_dir"];
+    rs::utils::filesystem::MakeDirectory(outDir);
+    retValue.first = tmpConfFile;
+    retValue.second = outDir;
+
+    return retValue;
+}
+void findUpdRsAlgo(std::string idTest, int currentStep, std::set<Keyonfig> &keys)
+{
+
+    auto listUpd = ConfigManagerTest::getInstance().getUpParameter(idTest);
+    if (listUpd.size() != 0)
+    {
+        for (auto &itemUpdCalib : listUpd)
+        {
+            if (itemUpdCalib.typeFile() == TYPE_FILE_RS_ALGO)
+            {                
+                getUpdRsAlgoParameter(itemUpdCalib.parameterName(), itemUpdCalib.value(),keys);
+            }
         }
     }
 }

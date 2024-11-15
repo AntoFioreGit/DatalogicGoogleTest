@@ -1,3 +1,5 @@
+#ifndef Util_h
+#define Util_h
 #include <iostream>
 
 #include <dirent.h>
@@ -8,6 +10,7 @@
 #include <set>
 #include <map>
 // #include <filesystem>
+#include "ConfigManagerTest.h"
 enum Keyonfig
 {
     ALGO,
@@ -15,7 +18,10 @@ enum Keyonfig
     ENABLE_SAVE_AB,
     DISABLE_SAVE_AB,
     ENABLE_SAVE_XYZ,
-    DISABLE_SAVE_XYZ
+    DISABLE_SAVE_XYZ,
+    SAVE_AB,
+    SAVE_XYZ,
+    ENABLE
 };
 enum KeyCalibPar
 {
@@ -47,7 +53,13 @@ std::string findFileRecursively(const std::string &directory, const std::string 
 std::string getTimeStamp();
 std::string getDirectoryPath(const std::string &filePath);
 std::string generateTempConf(std::string &confFile, std::set<Keyonfig>);
+std::string generateTempConf(std::string &confFile, std::map<Keyonfig,std::string> keys);
 std::string generateTempCalibParam(std::string &calibFile, std::map<KeyCalibPar,float>);
 bool removeDirectory(std::string path);
 void getUpdCalibParameter(std::string namePar, std::string value, std::map<KeyCalibPar, float>& keyVal);
 void getUpdRsAlgoParameter(std::string namePar, std::string value, std::set<Keyonfig>& key );
+std::string verifyAndUpdCalibrationFile(std::string idTest, int currentStep, std::string homeDir,bool &isRemoveFile);
+ExpectedResults *getExpectedResults(std::string idTest, int step);
+std::pair<std::string, std::string> buildTmpAlgoFile(std::string homeDir, std::string nameAlgoFile,std::set<Keyonfig>*Key=nullptr);
+void findUpdRsAlgo(std::string idTest,int currentStep,std::set<Keyonfig> &keys);
+#endif

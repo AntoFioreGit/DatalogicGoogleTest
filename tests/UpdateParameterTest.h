@@ -1,4 +1,6 @@
 #include <iostream>
+#ifndef UpdateParameterTest_h
+#define UpdateParameterTest_h
 class UpdateParameterTest {
     public:
     UpdateParameterTest();
@@ -29,3 +31,4 @@ class UpdateParameterTest {
 
  
 };
+#endif
