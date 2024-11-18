@@ -11,6 +11,9 @@
 #include <fstream>
 #include <glog/logging.h>
 #include "filesytem_helpers.h"
+
+
+
 std::string getDirectoryPath(const std::string &filePath)
 {
 
@@ -478,6 +481,25 @@ std::string verifyAndUpdCalibrationFile(std::string idTest, int currentStep, std
 
     return fullNameCalib;
 }
+
+std::list <ExpectedResults *> getExpectedResultsList(std::string idTest, int step)
+{
+    std::list <ExpectedResults *>result ;
+    auto listResult = ConfigManagerTest::getInstance().getExpectedRes(idTest);
+    for (ExpectedResults &itemResult : listResult)
+    {
+        if (itemResult.currentStep() == step)
+        {
+            result.push_back(&itemResult);
+        }
+    }
+    return result;
+}
+
+
+
+
+
 ExpectedResults *getExpectedResults(std::string idTest, int step)
 {
     ExpectedResults *result = nullptr;

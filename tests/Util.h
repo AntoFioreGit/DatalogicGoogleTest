@@ -60,6 +60,7 @@ void getUpdCalibParameter(std::string namePar, std::string value, std::map<KeyCa
 void getUpdRsAlgoParameter(std::string namePar, std::string value, std::set<Keyonfig>& key );
 std::string verifyAndUpdCalibrationFile(std::string idTest, int currentStep, std::string homeDir,bool &isRemoveFile);
 ExpectedResults *getExpectedResults(std::string idTest, int step);
+std::list <ExpectedResults *> getExpectedResultsList(std::string idTest, int step);
 std::pair<std::string, std::string> buildTmpAlgoFile(std::string homeDir, std::string nameAlgoFile,std::set<Keyonfig>*Key=nullptr);
 void findUpdRsAlgo(std::string idTest,int currentStep,std::set<Keyonfig> &keys);
 #endif

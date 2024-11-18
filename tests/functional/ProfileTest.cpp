@@ -22,6 +22,10 @@ using namespace rs;
 #include "filesytem_helpers.h"
 #include "calib_io.h"
 #include "frame_processor.h"
+
+#define PARAM_CHECK_PROFILE_NAME "NumberProfiles"
+
+
 class ProfileTest : public ::testing::Test
 {
 public:
@@ -53,7 +57,11 @@ TEST_F(ProfileTest, debugReadCfg)
           LOG(ERROR) << "Directory non valid ";
           return;
      }
-     ConfigManagerTest::getInstance().loadConfiguration();
+
+    if (  !  ConfigManagerTest::getInstance().loadListTests() ) {
+                LOG(ERROR) << "Fail Load Configuration ";
+                return ;
+    }
 
      for (auto test : ConfigManagerTest::getInstance().getTestsMap())
      {
@@ -118,17 +126,26 @@ TEST_F(ProfileTest, debugReadCfg)
                     xyz_frame.copyPoints(reinterpret_cast<int16_t *>(frame_buffer.data()), frame_height * frame_width);
 
                     size_t num_profiles = fp.invoke(xyz_frame.getPoints(), nullptr);
-
-                    auto expectedProfileResult = getExpectedResults(test.second.testId(), currentStep + 1);
-                    if (expectedProfileResult == nullptr)
-                    {
-
-                         LOG(ERROR) << "Expected  Result not Configurated for step Number" << currentStep + 1;
-                         continue;
+                    //Chek the result begin
+                    auto eRList =  getExpectedResultsList(test.second.testId(), currentStep + 1);
+                    int expectedNuberProfile=0;
+                    bool found = false;
+                    for (auto itemRes :eRList) {
+                         if (itemRes != nullptr) {
+                              if (itemRes->expectedParamName() == PARAM_CHECK_PROFILE_NAME){
+                                  expectedNuberProfile=std::stoi(itemRes->expectedParamValue()) ;
+                                  found=true;
+                                  break;
+                              }
+                          }
                     }
-                    EXPECT_EQ(num_profiles, expectedProfileResult->expectedNuberProfile());
-
-                    std::vector<std::vector<float>> xyz_lines;
+                    if (!found ) {
+                         LOG(ERROR) << "Expected  Result not Configurated for step Number" << currentStep + 1;
+                         continue;                    
+                    }
+                    
+                     EXPECT_EQ(num_profiles, expectedNuberProfile);
+                      std::vector<std::vector<float>> xyz_lines;
                     xyz_lines = fp.getProfiles();
                     int countPointValidResult = 0;
                     for (auto xyz_line : xyz_lines)
@@ -136,8 +153,36 @@ TEST_F(ProfileTest, debugReadCfg)
                          countPointValidResult += std::count_if(xyz_line.begin(), xyz_line.end(), [](int x)
                                                                 { return x != 0; });
                     }
-                    int expectedXYZPoints = expectedProfileResult->expectedNuberProfile() * NUMBER_POINT_4_PROFILE;
+                    int expectedXYZPoints =expectedNuberProfile * NUMBER_POINT_4_PROFILE;
                     EXPECT_EQ(countPointValidResult, expectedXYZPoints);
+
+
+
+
+
+                    // auto expectedProfileResult = getExpectedResults(test.second.testId(), currentStep + 1);
+                    // if (expectedProfileResult == nullptr)
+                    // {
+
+                    //      LOG(ERROR) << "Expected  Result not Configurated for step Number" << currentStep + 1;
+                    //      continue;
+                    // }
+                    // EXPECT_EQ(num_profiles, expectedProfileResult->expectedNuberProfile());
+
+                    // std::vector<std::vector<float>> xyz_lines;
+                    // xyz_lines = fp.getProfiles();
+                    // int countPointValidResult = 0;
+                    // for (auto xyz_line : xyz_lines)
+                    // {
+                    //      countPointValidResult += std::count_if(xyz_line.begin(), xyz_line.end(), [](int x)
+                    //                                             { return x != 0; });
+                    // }
+                    // int expectedXYZPoints = expectedProfileResult->expectedNuberProfile() * NUMBER_POINT_4_PROFILE;
+                    // EXPECT_EQ(countPointValidResult, expectedXYZPoints);
+
+                    //Chek the result end
+
+
                     std::remove(tmpConfFile.c_str());
                     removeDirectory(outDir);
                     if (isRemoveCalibTmpFile)

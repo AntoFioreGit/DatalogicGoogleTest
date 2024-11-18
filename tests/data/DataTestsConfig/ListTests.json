@@ -1,0 +1,12 @@
+{
+    "Name_Configurarion": "Data Test Name_Configuration",
+    "Tests": [
+        
+           { "File_Name_Test": "Test_Profiles.json"},
+           { "File_Name_Test": "Test_Profiles1.json"},
+           { "File_Name_Test": "Test_Profiles2.json"},
+           { "File_Name_Test": "Test_Profiles3.json"},
+           { "File_Name_Test": "Test_Profiles4.json"}
+			
+    ]
+}
