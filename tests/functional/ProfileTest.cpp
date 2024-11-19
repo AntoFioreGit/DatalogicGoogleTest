@@ -127,6 +127,7 @@ TEST_F(ProfileTest, demoProfileTest)
                     std::vector<char> frame_buffer;
                     int frame_width = cam_intrinsics.image_size[0];
                     int frame_height = cam_intrinsics.image_size[1];
+                    //Number of element  for  each profile. Each profile has a first and  last point. Each point has three coordinate (x,y,z)
                     int NUMBER_POINT_4_PROFILE = (3 * 2);
                     XyzFrame xyz_frame;
 
