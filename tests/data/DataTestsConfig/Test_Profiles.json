@@ -1,22 +1,37 @@
 
 {
+	"_comment_1":"Name Test",
     "Name_Test": "Test Configurar",
     "Tests": [
         {
+			"comment_1":"Identification test",
             "Test_Id": "3_Profile",
+			"comment_2":"Type test",
 			"Type": "Profile",
-			"NumberExectution": 2,
+			"comment_3":"Number of execution test",
+			"NumberExectution": 3,			
 			"Input":
 			{
+				"_comment_1":"This section contanis the input files for the test",
+				"_comment_2":"XYZ_File is the cloud points",
 				"XYZ_File": "data_output_qmp_84_XYZ_Test.bin",
+				"_comment_3":"Rs_AlgoConf_File is the configuration file",
 				"Rs_AlgoConf_File": "rs_algo_configTest.json",
+				"_comment_4":"Calib_File is the calibration file",
 				"Calib_File": "calib_data_XYZFrameTest.json",
+				"_comment_5":"IntrisicParam_File  is the file that contains the intrinsic cam parameters",
 				"IntrisicParam_File": "crXYZ_FrameTest.ccb"			
 			},
+			"_comment_1":"This section contanis the expectd result for each configurated test",
+			"_comment_2":"if the section is empty  or the current step is not valid the test is not done evaluate",
             "Expected_Results": 
 			[
+
 				{
-					"Current_Step": 1,										
+					"Current_Step": 1,	
+					"comment_1":"for each step, you can specify a list of parameters name and paramters value expected ",	
+					"comment_2":"in this example you want check the parameter NumberProfiles with the value expected equal to three",
+					"comment_3":"when the current step is equal to one",									
 					"Expected_Params":[	
 						{
 							"Expected_Parameter": "NumberProfiles",
@@ -26,15 +41,17 @@
 					
 				},
 				{
-					"Current_Step": 2,										
+					"Current_Step": 2,
+					"comment_1":"for each step, you can specify a list of parameters name and paramters value expected ",	
+					"comment_2":"in this example you want check the parameter NumberProfiles with the value expected equal to zero",
+					"comment_3":"when the current step is equal to two",											
 					"Expected_Params":[	
 						{
 							"Expected_Parameter": "NumberProfiles",
 							"Expected_Value": "0"	
 						}
 					]
-				}
-				
+				}				
             ],
             "Update_Parameter": 
 			[
