@@ -1,8 +1,7 @@
 #ifndef ConfigManagerTest_h
 #define ConfigManagerTest_h
 #include <iostream>
-
-
+#include "json.h"
 #include <map>
 #include <list>
 #include "Test.h"
@@ -23,10 +22,13 @@ public:
 
     bool loadListTests() ;
   //  bool loadConfiguration();
-    void dumpConfiguration();
+    void dumpConfiguration(nlohmann::json &json_value);
     std::list <UpdateParameterTest> getUpParameter(std::string key);
     std::list <ExpectedResults> getExpectedRes(std::string key);
     std::map<std::string,Test>& getTestsMap() ;
+
+    bool enableDumpConfig() const { return _enableDumpConfig; }
+    void setEnableDumpConfig(bool enableDumpConfig) { _enableDumpConfig = enableDumpConfig; }
 
 private:
     ConfigManagerTest();
@@ -44,6 +46,7 @@ private:
     std::map <std::string, std::list <UpdateParameterTest>> _updParMap;
     std::map <std::string, std::list <ExpectedResults>> _expecteResultrMap;
     std::list <std::string >_allNameFileTest;
+    bool _enableDumpConfig;
 
 };
 #endif

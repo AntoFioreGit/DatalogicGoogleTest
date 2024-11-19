@@ -1,5 +1,6 @@
+
 {
-    "Name_Configurarion": "Test Configurar",
+    "Name_Test": "Test Configurar",
     "Tests": [
         {
             "Test_Id": "3_Profile",
@@ -15,9 +16,7 @@
             "Expected_Results": 
 			[
 				{
-					"Current_Step": 1,
-					"NumberProfiles": 3,
-					"NumebeScanLine": 30,
+					"Current_Step": 1,										
 					"Expected_Params":[	
 						{
 							"Expected_Parameter": "NumberProfiles",
@@ -27,9 +26,7 @@
 					
 				},
 				{
-					"Current_Step": 2,
-					"NumberProfiles": 0,
-					"NumebeScanLine": 0,
+					"Current_Step": 2,										
 					"Expected_Params":[	
 						{
 							"Expected_Parameter": "NumberProfiles",
@@ -57,9 +54,7 @@
 						{
 							"Parameter": "range_z_max",
 							"Value": "0"
-						}
-
-						
+						}						
 					]                                      
 				},
 				{
